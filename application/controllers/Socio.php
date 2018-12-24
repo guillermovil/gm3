@@ -34,15 +34,38 @@ class Socio extends CI_Controller{
     }
 
     public function addSocioPost() {
+        $config['upload_path']   = './uploads/';
+        $config['allowed_types'] = 'gif|jpg|png';
+        $config['max_size']      = 4000;
+        $config['max_width']     = 4000;
+        $config['max_height']    = 4000;        
         $this->load->library('form_validation');
+        $this->load->library('upload', $config);
         $this->form_validation->set_error_delimiters('<div class="alert alert-warning" role="alert">', '</div>');
         $this->set_rules();
 
+        $errorfile = false;
+        if ( ! $this->upload->do_upload('soc_foto')){
+            $error = array('error' => $this->upload->display_errors());
+            $errorfile = true; 
+        }else{
+            $datafile = array('upload_data' => $this->upload->data());
+            // echo '<pre>';
+            // print_r($datafile);
+            // echo '</pre>';           
+            $fp = fopen( $datafile['upload_data']['full_path'], "rb");
+            $contenido = fread($fp,$datafile['upload_data']['file_size']*1024);
+            fclose($fp);
+            $escaped = bin2hex( $contenido );  
 
-        if ($this->form_validation->run() == FALSE){
+        }
+
+
+        if ($this->form_validation->run() == FALSE or $errorfile == TRUE){
             $data['_view'] = 'socio/add-socio';
             $data['title'] = 'Socios';
             $data['subtitle'] = 'nuevo socio';
+            $data['_errorfile'] = $error;
             $this->load->view('layouts/main-vertical',$data);
         }else{
             $data['soc_tipodoc'] = $this->input->post('soc_tipodoc');
@@ -53,6 +76,8 @@ class Socio extends CI_Controller{
             $data['soc_nacimiento'] = $this->input->post('soc_nacimiento');
             $data['soc_telefono'] = $this->input->post('soc_telefono');
             $data['soc_email'] = $this->input->post('soc_email');
+            $data['soc_foto'] = base64_decode($escaped); 
+          
 
             $this->Socio_model->insert($data);
 
@@ -65,6 +90,17 @@ class Socio extends CI_Controller{
             $this->load->view('layouts/main-vertical',$data1);
         }
     }
+
+    public function editSocio($socio_id) {
+        $this->load->helper(array('form', 'url'));
+        $data['_view'] = 'socio/edit-socio';
+        $data['title'] = 'Socios';
+        $data['subtitle'] = 'Editar datos del socio';
+        $data['socio'] =  $this->Socio_model->get_socio($socio_id);
+
+        $this->load->view('layouts/main-vertical',$data);
+    }
+
 
     public function deleteSocio($socios_id) {
         $delete =  $this->Socio_model->delete($socios_id);
