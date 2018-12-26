@@ -54,10 +54,23 @@ class Socio_model extends CI_Model
         return $row->soc_foto;
     }
 
-    function update_socio($soc_id,$params)
+    function update($data)
     {
-        $this->db->where('soc_id',$soc_id);
-        return $this->db->update('socios',$params);
+
+        $sql = "UPDATE socios SET
+                    soc_tipodoc =  {$this->db->escape($data['soc_tipodoc'])},
+                    soc_nrodoc =  {$this->db->escape($data['soc_nrodoc'])},
+                    soc_apellido =  {$this->db->escape($data['soc_apellido'])},
+                    soc_nombre =  {$this->db->escape($data['soc_nombre'])},
+                    soc_domicilio =  {$this->db->escape($data['soc_domicilio'])},
+                    soc_nacimiento =  {$this->db->escape($data['soc_nacimiento'])},
+                    soc_telefono =  {$this->db->escape($data['soc_telefono'])},
+                    soc_email =         {$this->db->escape($data['soc_email'])}
+                WHERE
+                    soc_id = {$data['soc_id']};";
+        echo $sql;       //debug query
+        $this->db->query($sql);
+        return $data['soc_id'];
     }
 
     function delete($soc_id)

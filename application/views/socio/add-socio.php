@@ -16,7 +16,7 @@
       <input type="text" class="form-control" id="soc_nrodoc" name="soc_nrodoc" value="<?php echo set_value('soc_nrodoc'); ?>">
     </div>
     <div class="col-sm-2">
-      <label for="soc_nacimiento">Soc_nacimiento:</label>
+      <label for="soc_nacimiento">Nacimiento:</label>
       <input type="date" class="form-control" id="soc_nacimiento" name="soc_nacimiento" value="<?php echo set_value('soc_nacimiento'); ?>">
     </div>
   </div>
@@ -32,28 +32,27 @@
   </div>
   <div class="form-row">
     <div class="col-sm-6">
-      <label for="soc_domicilio">Soc_domicilio:</label>
+      <label for="soc_domicilio">Domicilio:</label>
       <input type="text" class="form-control" id="soc_domicilio" name="soc_domicilio" value="<?php echo set_value('soc_domicilio'); ?>">
     </div>
   </div>
   <div class="form-row">  
     <div class="col-sm-3">
-      <label for="soc_telefono">Soc_telefono:</label>
+      <label for="soc_telefono">Telefono:</label>
       <input type="text" class="form-control" id="soc_telefono" name="soc_telefono" value="<?php echo set_value('soc_telefono'); ?>">
     </div>
     <div class="col-sm-3">
-      <label for="soc_email">Soc_email:</label>
+      <label for="soc_email">Email:</label>
       <input type="email" class="form-control" id="soc_email" name="soc_email" value="<?php echo set_value('soc_email'); ?>">
     </div>
   </div>
   <div class="form-row">
-  <div class="col-sm-6">
-      <label for="soc_foto">Foto:</label>
-      <input type="file" class="form-control" id="soc_foto" name="soc_foto">
+    <div class="col-sm-6">
+      <label for="soc_foto"><i class="fas fa-camera-retro"></i> Foto:</label>
+      <input type="file" class="form-control" id="soc_foto" name="soc_foto" style="height:43px; font-size:12px; font-color:gray;">
+      <span class="small text-muted"> Seleccionar una imágen (200 x 200 pixeles. Inferior a 500 kbytes) </span>
     </div>
   </div>
   <br> 
   <button type="submit" class="btn btn-primary">Submit</button>
 </form>
-
-
