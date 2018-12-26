@@ -76,7 +76,7 @@ class Socio extends CI_Controller{
             $data['soc_nacimiento'] = $this->input->post('soc_nacimiento');
             $data['soc_telefono'] = $this->input->post('soc_telefono');
             $data['soc_email'] = $this->input->post('soc_email');
-            $data['soc_foto'] = base64_decode($escaped); 
+            $data['soc_foto'] = $escaped; 
           
 
             $this->Socio_model->insert($data);
@@ -172,6 +172,17 @@ class Socio extends CI_Controller{
                     );
             
         echo json_encode($json_data); 
+    }
+    public function showfoto($soc_id)
+    {
+        $fotoraw = $this->Socio_model->foto($soc_id);
+        header("Content-Type: image/jpeg");
+        if ($fotoraw=='sf'){
+            $imagen = file_get_contents('image/sinimagen.jpg');
+            echo $imagen;
+        }else{
+            echo base64_decode($fotoraw);
+        }
     }
 
 }

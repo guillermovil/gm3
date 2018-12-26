@@ -18,11 +18,42 @@ class Socio_model extends CI_Model
         $this->db->order_by('soc_apellido', 'asc');
         return $this->db->get('socios')->result_array();
     }
+    
+
     public function insert($data) {
-        $this->db->insert('socios', $data);
+
+        $sql = "INSERT INTO public.socios(
+            soc_tipodoc, 
+            soc_nrodoc, soc_apellido, 
+            soc_nombre, soc_domicilio, 
+            soc_foto, soc_nacimiento, 
+            soc_created, soc_telefono, 
+            soc_email)
+        VALUES (
+            {$this->db->escape($data['soc_tipodoc'])},
+            {$this->db->escape($data['soc_nrodoc'])},
+            {$this->db->escape($data['soc_apellido'])},
+            {$this->db->escape($data['soc_nombre'])},
+            {$this->db->escape($data['soc_domicilio'])},
+            decode('{$data['soc_foto']}' , 'hex'),
+            {$this->db->escape($data['soc_nacimiento'])},
+            now(),
+            {$this->db->escape($data['soc_telefono'])},
+            {$this->db->escape($data['soc_email'])}
+        )";
+        //echo $sql;       debug query
+        $this->db->query($sql);
         return $this->db->insert_id();
     }
     
+    public function foto($soc_id)
+    {
+        $sql = "SELECT coalesce(encode(soc_foto, 'base64'),'sf') AS soc_foto FROM socios WHERE soc_id = $soc_id";
+        $query = $this->db->query($sql);
+        $row = $query->row();
+        return $row->soc_foto;
+    }
+
     function update_socio($soc_id,$params)
     {
         $this->db->where('soc_id',$soc_id);

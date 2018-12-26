@@ -3,9 +3,9 @@
   if(isset($_errorfile) ){
     echo '<div class="alert alert-warning" role="alert">'.$_errorfile['error'].'</div>';
   }
-  echo '<pre>';
-  print_r($socio);
-  echo '</pre>';   
+  //echo '<pre>';               //debug array socio
+  //print_r($socio);
+  //echo '</pre>';   
   $attributes = array('role' => 'form', 'id' => 'myform');
   echo form_open_multipart(site_url().'socio/editSocioPost',$attributes); 
 ?>
@@ -53,9 +53,8 @@
   <div class="col-sm-6">
       <label for="soc_foto">Foto:</label>
       <input type="file" class="form-control" id="soc_foto" name="soc_foto">
-      <?php
-        echo base64_decode($socio['soc_foto']);
-      ?>
+      <img src="<?php echo site_url('socio/showfoto/'.$socio['soc_id']);?>">
+
     </div>
   </div>
   <br> 
