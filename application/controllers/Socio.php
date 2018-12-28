@@ -13,6 +13,13 @@ class Socio extends CI_Controller{
         $this->form_validation->set_rules('soc_apellido', 'Apellido', 'required|alpha');
         $this->form_validation->set_rules('soc_email', 'Email', 'required|valid_email');
     }
+    private function sinonull($dato){
+        if ($dato == ''){
+            return null;
+        }else{
+            return $dato;
+        }
+    }
 
     public function index()
     {
@@ -45,19 +52,24 @@ class Socio extends CI_Controller{
         $this->set_rules();
 
         $errorfile = false;
-        if ( ! $this->upload->do_upload('soc_foto')){
-            $error = array('error' => $this->upload->display_errors());
-            $errorfile = true; 
-        }else{
-            $datafile = array('upload_data' => $this->upload->data());
-            // echo '<pre>';
-            // print_r($datafile);
-            // echo '</pre>';           
-            $fp = fopen( $datafile['upload_data']['full_path'], "rb");
-            $contenido = fread($fp,$datafile['upload_data']['file_size']*1024);
-            fclose($fp);
-            $escaped = bin2hex( $contenido );  
+        if(isset($_FILES['soc_foto']) && $_FILES['soc_foto']['size'] > 0){
+            $hasfile = true;
 
+            if ( ! $this->upload->do_upload('soc_foto')){
+                $error = array('error' => $this->upload->display_errors());
+                $errorfile = true; 
+            }else{
+                $datafile = array('upload_data' => $this->upload->data());
+                // echo '<pre>';
+                // print_r($datafile);
+                // echo '</pre>';           
+                $fp = fopen( $datafile['upload_data']['full_path'], "rb");
+                $contenido = fread($fp,$datafile['upload_data']['file_size']*1024);
+                fclose($fp);
+                $escaped = bin2hex( $contenido );  
+            }
+        }else{
+           $hasfile = false; 
         }
 
 
@@ -65,20 +77,24 @@ class Socio extends CI_Controller{
             $data['_view'] = 'socio/add-socio';
             $data['title'] = 'Socios';
             $data['subtitle'] = 'nuevo socio';
-            $data['_errorfile'] = $error;
+            if ($errorfile == TRUE){
+                $data['_errorfile'] = $error;
+            }
             $this->load->view('layouts/main-vertical',$data);
         }else{
-            $data['soc_tipodoc'] = $this->input->post('soc_tipodoc');
-            $data['soc_nrodoc'] = $this->input->post('soc_nrodoc');
-            $data['soc_apellido'] = $this->input->post('soc_apellido');
-            $data['soc_nombre'] = $this->input->post('soc_nombre');
-            $data['soc_domicilio'] = $this->input->post('soc_domicilio');
-            $data['soc_nacimiento'] = $this->input->post('soc_nacimiento');
-            $data['soc_telefono'] = $this->input->post('soc_telefono');
-            $data['soc_email'] = $this->input->post('soc_email');
-            $data['soc_foto'] = $escaped; 
-          
-
+            $data['soc_tipodoc'] = $this->sinonull($this->input->post('soc_tipodoc'));
+            $data['soc_nrodoc'] = $this->sinonull($this->input->post('soc_nrodoc'));
+            $data['soc_apellido'] = $this->sinonull($this->input->post('soc_apellido'));
+            $data['soc_nombre'] = $this->sinonull($this->input->post('soc_nombre'));
+            $data['soc_domicilio'] = $this->sinonull($this->input->post('soc_domicilio'));
+            $data['soc_nacimiento'] = $this->sinonull($this->input->post('soc_nacimiento'));
+            $data['soc_telefono'] = $this->sinonull($this->input->post('soc_telefono'));
+            $data['soc_email'] = $this->sinonull($this->input->post('soc_email'));
+            $data['hasfile'] = $hasfile;
+            if ($hasfile == true){
+                $data['soc_foto'] = $escaped; 
+            }                
+            
             $this->Socio_model->insert($data);
 
             $data1['_view'] = 'socio/index';
@@ -114,40 +130,52 @@ class Socio extends CI_Controller{
         $this->form_validation->set_error_delimiters('<div class="alert alert-warning" role="alert">', '</div>');
         $this->set_rules();
 
+
+
         $errorfile = false;
-        if ( ! $this->upload->do_upload('soc_foto')){
-            $error = array('error' => $this->upload->display_errors());
-            $errorfile = true; 
+        $error = '';
+        if(isset($_FILES['soc_foto']) && $_FILES['soc_foto']['size'] > 0){
+            $hasfile = true;
+
+            if ( ! $this->upload->do_upload('soc_foto')){
+                $error = array('error' => $this->upload->display_errors());
+                $errorfile = true; 
+            }else{
+                $datafile = array('upload_data' => $this->upload->data());
+                // echo '<pre>';
+                // print_r($datafile);
+                // echo '</pre>';           
+                $fp = fopen( $datafile['upload_data']['full_path'], "rb");
+                $contenido = fread($fp,$datafile['upload_data']['file_size']*1024);
+                fclose($fp);
+                $escaped = bin2hex( $contenido );  
+            }
         }else{
-            $datafile = array('upload_data' => $this->upload->data());
-            // echo '<pre>';
-            // print_r($datafile);
-            // echo '</pre>';           
-            $fp = fopen( $datafile['upload_data']['full_path'], "rb");
-            $contenido = fread($fp,$datafile['upload_data']['file_size']*1024);
-            fclose($fp);
-            $escaped = bin2hex( $contenido );  
-
+           $hasfile = false; 
         }
-
 
         if ($this->form_validation->run() == FALSE or $errorfile == TRUE){
             $data['_view'] = 'socio/edit-socio';
             $data['title'] = 'Socios';
             $data['subtitle'] = 'editar datos del socio';
-            $data['_errorfile'] = $error;
+            if ($errorfile == TRUE){
+                $data['_errorfile'] = $error;
+            }
             $this->load->view('layouts/main-vertical',$data);
         }else{
-            $data['soc_tipodoc'] = $this->input->post('soc_tipodoc');
-            $data['soc_nrodoc'] = $this->input->post('soc_nrodoc');
-            $data['soc_apellido'] = $this->input->post('soc_apellido');
-            $data['soc_nombre'] = $this->input->post('soc_nombre');
-            $data['soc_domicilio'] = $this->input->post('soc_domicilio');
-            $data['soc_nacimiento'] = $this->input->post('soc_nacimiento');
-            $data['soc_telefono'] = $this->input->post('soc_telefono');
-            $data['soc_email'] = $this->input->post('soc_email');
-            $data['soc_foto'] = $escaped; 
-          
+            $data['soc_id'] = $this->sinonull($this->input->post('soc_id'));
+            $data['soc_tipodoc'] = $this->sinonull($this->input->post('soc_tipodoc'));
+            $data['soc_nrodoc'] = $this->sinonull($this->input->post('soc_nrodoc'));
+            $data['soc_apellido'] = $this->sinonull($this->input->post('soc_apellido'));
+            $data['soc_nombre'] = $this->sinonull($this->input->post('soc_nombre'));
+            $data['soc_domicilio'] = $this->sinonull($this->input->post('soc_domicilio'));
+            $data['soc_nacimiento'] = $this->sinonull($this->input->post('soc_nacimiento'));
+            $data['soc_telefono'] = $this->sinonull($this->input->post('soc_telefono'));
+            $data['soc_email'] = $this->sinonull($this->input->post('soc_email'));
+            $data['hasfile'] = $hasfile;
+            if ($hasfile == true){
+                $data['soc_foto'] = $escaped; 
+            }
 
             $this->Socio_model->update($data);
 
@@ -160,9 +188,6 @@ class Socio extends CI_Controller{
             $this->load->view('layouts/main-vertical',$data1);
         }
     }
-
-
-
 
 
     public function deleteSocio($socios_id) {
@@ -241,7 +266,7 @@ class Socio extends CI_Controller{
         $fotoraw = $this->Socio_model->foto($soc_id);
         header("Content-Type: image/jpeg");
         if ($fotoraw=='sf'){
-            $imagen = file_get_contents('image/sinimagen.jpg');
+            $imagen = file_get_contents('resources/image/user_dark.png');
             echo $imagen;
         }else{
             echo base64_decode($fotoraw);

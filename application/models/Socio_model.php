@@ -9,6 +9,12 @@ class Socio_model extends CI_Model
 
     function get_socio($soc_id)
     {
+        $this->db->select('
+            soc_id, soc_tipodoc, 
+            soc_nrodoc, soc_apellido, 
+            soc_nombre, soc_domicilio, 
+            soc_nacimiento, soc_created, 
+            soc_telefono, soc_email');
         return $this->db->get_where('socios',array('soc_id'=>$soc_id))->row_array();
     }
         
@@ -18,9 +24,27 @@ class Socio_model extends CI_Model
         $this->db->order_by('soc_apellido', 'asc');
         return $this->db->get('socios')->result_array();
     }
-    
+        
 
     public function insert($data) {
+
+/*        echo '<pre>';
+        print_r($data);
+        echo '</pre>';  
+
+        if (is_null($data['soc_domicilio'])){
+            echo 'domicilio es nulo';
+        }else{
+            echo 'domicilio no es nulo';
+        };
+        echo $this->db->escape(NULL);
+
+        exit;*/
+        if ($data['hasfile'] == true){
+            $foto1 = "decode('{$data['soc_foto']}' , 'hex')";
+        }else{
+            $foto1 = "null";
+        }
 
         $sql = "INSERT INTO public.socios(
             soc_tipodoc, 
@@ -35,7 +59,7 @@ class Socio_model extends CI_Model
             {$this->db->escape($data['soc_apellido'])},
             {$this->db->escape($data['soc_nombre'])},
             {$this->db->escape($data['soc_domicilio'])},
-            decode('{$data['soc_foto']}' , 'hex'),
+            {$foto1},
             {$this->db->escape($data['soc_nacimiento'])},
             now(),
             {$this->db->escape($data['soc_telefono'])},
@@ -56,19 +80,25 @@ class Socio_model extends CI_Model
 
     function update($data)
     {
-
+        $columnas = "
+            soc_tipodoc =  {$this->db->escape($data['soc_tipodoc'])},
+            soc_nrodoc =  {$this->db->escape($data['soc_nrodoc'])},
+            soc_apellido =  {$this->db->escape($data['soc_apellido'])},
+            soc_nombre =  {$this->db->escape($data['soc_nombre'])},
+            soc_domicilio =  {$this->db->escape($data['soc_domicilio'])},
+            soc_nacimiento =  {$this->db->escape($data['soc_nacimiento'])},
+            soc_telefono =  {$this->db->escape($data['soc_telefono'])},
+            soc_email =         {$this->db->escape($data['soc_email'])}";
+        // Si viene seteado soc_foto lo agrego a las columnas a modificar    
+        if ($data['hasfile'] == true){
+            $columnas = $columnas . ", soc_foto =  decode('{$data['soc_foto']}' , 'hex')";
+        }
         $sql = "UPDATE socios SET
-                    soc_tipodoc =  {$this->db->escape($data['soc_tipodoc'])},
-                    soc_nrodoc =  {$this->db->escape($data['soc_nrodoc'])},
-                    soc_apellido =  {$this->db->escape($data['soc_apellido'])},
-                    soc_nombre =  {$this->db->escape($data['soc_nombre'])},
-                    soc_domicilio =  {$this->db->escape($data['soc_domicilio'])},
-                    soc_nacimiento =  {$this->db->escape($data['soc_nacimiento'])},
-                    soc_telefono =  {$this->db->escape($data['soc_telefono'])},
-                    soc_email =         {$this->db->escape($data['soc_email'])}
+                    $columnas
                 WHERE
                     soc_id = {$data['soc_id']};";
-        echo $sql;       //debug query
+        //echo $sql;       //debug query
+        //exit;
         $this->db->query($sql);
         return $data['soc_id'];
     }
@@ -144,8 +174,6 @@ class Socio_model extends CI_Model
     
         return $query->num_rows();
     } 
-   
-
 
 }
 

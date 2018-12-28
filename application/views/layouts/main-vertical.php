@@ -50,7 +50,7 @@
             <ul class="list-unstyled components">
                 <!-- <p>Dummy Heading</p> -->
                 <li>
-                    <a href="#sociosmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Socios</a>
+                    <a href="#sociosmenu" data-toggle="collapse" aria-expanded="true" class="dropdown-toggle">Socios</a>
                     <ul class="collapse list-unstyled" id="sociosmenu">
                         <li>
                             <a href="<?php echo site_url('socio');?>"><i class="fas fa-th"></i> Lista de socios</a>
