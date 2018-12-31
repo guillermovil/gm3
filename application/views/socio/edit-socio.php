@@ -7,9 +7,10 @@
   // print_r($socio);
   // echo '</pre>';   
   $attributes = array('role' => 'form', 'id' => 'myform');
-  $hidden = array('soc_id' => $socio['soc_id']);
-  echo form_open_multipart(site_url().'socio/editSocioPost',$attributes, $hidden); 
+  //$hidden = array('soc_id' => $socio['soc_id']);
+  echo form_open_multipart(site_url().'socio/editSocioPost',$attributes); 
 ?>
+  <input type="text" class="form-control" id="soc_id" name="soc_id" value="<?php echo set_value('soc_id',@$socio['soc_id']); ?>">
   <div class="form-row"> 
     <div class="col-sm-1">
       <label class="text-muted" for="soc_tipodoc">Tipo:</label>
@@ -53,7 +54,10 @@
   </div>
   <div class="form-row">
     <div class="col-sm-3">
-      <img src="<?php echo site_url('socio/showfoto/'.$socio['soc_id']);?>" width="150" style='-moz-box-shadow: 0 0 5px #333;-webkit-box-shadow: 0 0 5px #333;box-shadow: 0 0 5px #333;'>
+      <img src="<?php 
+        echo site_url('socio/showfoto/');
+        echo set_value('soc_id',@$socio['soc_id']);
+      ?>" width="150" style='-moz-box-shadow: 0 0 5px #333;-webkit-box-shadow: 0 0 5px #333;box-shadow: 0 0 5px #333;'>
     </div>  
 
     <div class="col-sm-3">
