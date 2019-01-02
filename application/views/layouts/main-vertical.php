@@ -67,7 +67,7 @@
                             <a href="<?php echo site_url('actividad');?>"><i class="fas fa-th"></i> Lista de actividades</a>
                         </li>
                         <li>
-                            <a href="#"><i class="fas fa-plus"></i> Nueva actividad</a>
+                            <a href="<?php echo site_url('actividad/addActividad');?>"><i class="fas fa-plus"></i> Nueva actividad</a>
                         </li>
                     </ul>
                 </li>                

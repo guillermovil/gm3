@@ -28,16 +28,16 @@ class Actividad_model extends CI_Model
     /*
      * function to add new actividad
      */
-    function add_actividad($params)
+    function insert($params)
     {
         $this->db->insert('actividades',$params);
-        return $this->db->insert_id();
+        return true;
     }
     
     /*
      * function to update actividad
      */
-    function update_actividad($act_code,$params)
+    function update($act_code,$params)
     {
         $this->db->where('act_code',$act_code);
         return $this->db->update('actividades',$params);
@@ -46,7 +46,7 @@ class Actividad_model extends CI_Model
     /*
      * function to delete actividad
      */
-    function delete_actividad($act_code)
+    function delete($act_code)
     {
         return $this->db->delete('actividades',array('act_code'=>$act_code));
     }

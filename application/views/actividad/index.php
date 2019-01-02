@@ -1,3 +1,14 @@
+<?php                    
+if(isset($_alert) && $_alert){
+  echo "<div id='aviso' class='alert $_alert_tipo' role='alert'>";
+  echo $_alert;
+  echo "<button type='button' class='close' data-dismiss='alert' aria-label='Close'>";
+  echo "<span aria-hidden='true'>&times;</span>";
+  echo "</button>";
+  echo  "</div>";
+};
+
+?>
     <table id="actividades_table" class="table table-bordered table-hover" style="width:100%; font-size: smaller;">
         <thead class="thead-dark">  
             <tr>
@@ -24,15 +35,15 @@
             "columns": [
                     { 
                         "data": "act_code", 
-                        "searchable": false 
+                        "searchable": false,  
+                        "width": "5%" 
                     },
                     { "data": "act_nombre" },
                     {
                         "data": null,
                         render: function ( data, type, row ) {
-                            return `<button type="button" class="btn btn-success btn-sm">  <i class="fas fa-pen"></i>
-                            </button>
-                            <button type="button" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></button>`;
+                            return `<a href="<?php echo site_url('actividad/editActividad/'); ?>`+row.act_code+`"" class="btn btn-info btn-sm" role="button"><i class="fas fa-pen"></i></a>
+                            <a href="<?php echo site_url('actividad/deleteActividad/'); ?>`+row.act_code+`"" class="btn btn-danger btn-sm" role="button"><i class="fas fa-trash-alt"></i></a>`;
                         },
                         "width": "10%"                   
                     }
