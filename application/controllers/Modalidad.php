@@ -1,15 +1,15 @@
 <?php
-class Actividad extends CI_Controller{
+class Modalida extends CI_Controller{
     function __construct()
     {
         parent::__construct();
-        $this->load->model('Actividad_model');
+        $this->load->model('Modalidad_model');
     } 
 
     private function set_rules()
     {
-        $this->form_validation->set_rules('act_code', 'Código', 'required|alpha_numeric_spaces');
-        $this->form_validation->set_rules('act_nombre', 'Nombre', 'required|alpha_numeric_spaces');
+        $this->form_validation->set_rules('mod_tipo', 'Tipo', 'required|alpha_numeric_spaces');
+        $this->form_validation->set_rules('mod_precio', 'Precio', 'required|decimal|greater_than[0]|less_than[10000]');
 
     }
     private function sinonull($dato){
@@ -20,16 +20,6 @@ class Actividad extends CI_Controller{
         }
     }
 
-
-    function index()
-    {
-        $data['actividades'] = $this->Actividad_model->get_all_actividades();
-        $data['_view'] = 'actividad/index';
-        $data['_dt'] = 'true';
-        $data['title'] = 'Actividades';
-        $data['subtitle'] = 'Listado general';
-        $this->load->view('layouts/main-vertical',$data);
-    }
 
     public function addActividad() {
         $this->load->helper(array('form', 'url'));
@@ -82,7 +72,6 @@ class Actividad extends CI_Controller{
         $this->load->helper(array('form', 'url'));
         $data['_view'] = 'actividad/edit-actividad';
         $data['title'] = 'Actividades';
-        $data['_dt'] = 'true';
         $data['subtitle'] = 'Editar datos de la actividad';
         $data['actividad'] =  $this->Actividad_model->get_actividad($actividad_id);
 
@@ -113,23 +102,22 @@ class Actividad extends CI_Controller{
         }
     }
 
-    public function tabla()
-    {
-
+    public function tabla($act_code){
             $columns = array( 
-                                0 =>'act_code', 
-                                1 =>'act_nombre'
+                                0 =>'act_code',   
+                                1 =>'mod_tipo', 
+                                2 =>'mod_precio'
                             );
 
-            $actividades = $this->Actividad_model->all();
+            $modalidades = $this->Modalidad_model->all($act_code);
             $data = array();
-            if(!empty($actividades))
+            if(!empty($modalidades))
             {
-                foreach ($actividades as $act)
+                foreach ($modalidades as $mod)
                 {
-
-                    $nestedData['act_code'] = $act->act_code;
-                    $nestedData['act_nombre'] = $act->act_nombre;                   
+                    $nestedData['act_code'] = $mod->act_code;
+                    $nestedData['mod_tipo'] = $mod->mod_tipo;
+                    $nestedData['mod_precio'] = $mod->mod_precio;                   
                     $data[] = $nestedData;
                 }
             }
