@@ -72,8 +72,14 @@ class Actividad extends CI_Controller{
         $data1['_dt'] = 'true';
         $data1['title'] = 'Actividades';
         $data1['subtitle'] = 'Listado general';
-        $data1['_alert'] = 'Registro eliminado!';
-        $data1['_alert_tipo'] = 'alert-danger';
+        if ($delete) {
+            $data1['_alert'] = 'Registro eliminado!';
+            $data1['_alert_tipo'] = 'alert-danger';
+        }else{
+            $data1['_alert'] = 'El registro no se pudo eliminar!';
+            $data1['_alert_tipo'] = 'alert-danger';            
+        }
+
         $this->load->view('layouts/main-vertical',$data1);
 
     }

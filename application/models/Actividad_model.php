@@ -48,7 +48,13 @@ class Actividad_model extends CI_Model
      */
     function delete($act_code)
     {
-        return $this->db->delete('actividades',array('act_code'=>$act_code));
+        // Este tipo de control funciona si el ambiente es de producción
+        // el cual se configura dentro del index del sitio.
+        if (!$this->db->delete('actividades',array('act_code'=>$act_code))){
+            return false;
+        }else{
+            return true;
+        };
     }
 
 
