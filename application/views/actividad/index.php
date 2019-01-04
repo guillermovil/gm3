@@ -50,5 +50,8 @@ if(isset($_alert) && $_alert){
                ]     
 
         });
+        $('#aviso').delay(4000).slideUp(200, function() {
+            $(this).alert('close');
+        });        
     });
 </script>

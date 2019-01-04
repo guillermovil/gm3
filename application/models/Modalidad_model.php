@@ -18,7 +18,11 @@ class Modalidad_model extends CI_Model
     }
     
     function delete($act_code, $mod_tipo){
-        return $this->db->delete('modalidades',array('act_code'=>$act_code, 'mod_tipo'=>$mod_tipo));
+        if (!$this->db->delete('modalidades',array('act_code'=>$act_code, 'mod_tipo'=>$mod_tipo))) {
+            return false;
+        }else{
+            return true;
+        }
     }
 
     function all($act_code){   

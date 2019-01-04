@@ -10,7 +10,7 @@
   //$hidden = array('soc_id' => $socio['soc_id']);
   echo form_open_multipart(site_url().'socio/editSocioPost',$attributes); 
 ?>
-  <input type="text" class="form-control" id="soc_id" name="soc_id" value="<?php echo set_value('soc_id',@$socio['soc_id']); ?>">
+  <input type="hidden" class="form-control" id="soc_id" name="soc_id" value="<?php echo set_value('soc_id',@$socio['soc_id']); ?>">
   <div class="form-row"> 
     <div class="col-sm-1">
       <label class="text-muted" for="soc_tipodoc">Tipo:</label>

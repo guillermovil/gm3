@@ -40,16 +40,20 @@ class Actividad_model extends CI_Model
     function update($act_code,$params)
     {
         $this->db->where('act_code',$act_code);
-        return $this->db->update('actividades',$params);
+        if (!$this->db->update('actividades',$params)){
+            return false;
+        }else{
+            return true;
+        }
     }
     
     /*
-     * function to delete actividad
+     * function to delete actividad.
+     * Este tipo de control funciona si el ambiente es de producción
+     * el cual se configura dentro del index del sitio.
      */
     function delete($act_code)
     {
-        // Este tipo de control funciona si el ambiente es de producción
-        // el cual se configura dentro del index del sitio.
         if (!$this->db->delete('actividades',array('act_code'=>$act_code))){
             return false;
         }else{

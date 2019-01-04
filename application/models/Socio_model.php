@@ -147,6 +147,7 @@ class Socio_model extends CI_Model
                 ->like('soc_apellido',$search)
                 ->or_like('soc_nombre',$search)
                 ->or_like('soc_email',$search)
+                ->or_like('soc_nrodoc',$search)
                 ->limit($limit,$start)
                 ->order_by($col,$dir)
                 ->get('socios');

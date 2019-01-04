@@ -65,10 +65,7 @@ Despliegue de las modalidades de la actividad
                 "data":{  '<?php echo $this->security->get_csrf_token_name(); ?>' : '<?php echo $this->security->get_csrf_hash(); ?>' }
             },
             "columns": [
-                    { 
-                        "data": "mod_tipo", 
-                        "searchable": false
-                    },
+                    { "data": "mod_descrip" },
                     { "data": "mod_precio" },
                     {
                         "data": null,

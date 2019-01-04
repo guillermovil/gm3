@@ -77,7 +77,7 @@ class Actividad extends CI_Controller{
             $data1['_alert_tipo'] = 'alert-danger';
         }else{
             $data1['_alert'] = 'El registro no se pudo eliminar!';
-            $data1['_alert_tipo'] = 'alert-danger';            
+            $data1['_alert_tipo'] = 'alert-warning';            
         }
 
         $this->load->view('layouts/main-vertical',$data1);
@@ -108,13 +108,18 @@ class Actividad extends CI_Controller{
         }else{
             $data['act_code'] = $this->sinonull($this->input->post('act_code'));
             $data['act_nombre'] = $this->sinonull($this->input->post('act_nombre'));
-            $this->Actividad_model->update($this->input->post('act_code_original'),$data);
+            $update = $this->Actividad_model->update($this->input->post('act_code_original'),$data);
             $data1['_view'] = 'actividad/index';
             $data1['_dt'] = 'true';
             $data1['title'] = 'Actividades';
             $data1['subtitle'] = 'Listado general';
-            $data1['_alert'] = 'Registro guardado!';
-            $data1['_alert_tipo'] = 'alert-success';
+            if ($update) {
+                $data1['_alert'] = 'Registro guardado!';
+                $data1['_alert_tipo'] = 'alert-success';                
+            }else{
+                $data1['_alert'] = 'El registro no se pudo modificar!';
+                $data1['_alert_tipo'] = 'alert-warning';                
+            }
             $this->load->view('layouts/main-vertical',$data1);
         }
     }

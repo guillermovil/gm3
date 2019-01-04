@@ -1,5 +1,5 @@
 <?php
-class Modalidad extends CI_Controller{
+class Inscripcion extends CI_Controller{
     function __construct()
     {
         parent::__construct();
