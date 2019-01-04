@@ -15,16 +15,16 @@
     </div>
   </div>
   <br> 
-  <button type="submit" class="btn btn-primary">Guardar</button>
+  <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i> Guardar</button>
 </form>
 
-<br>
 <br>
 <!-- 
 Despliegue de las modalidades de la actividad
  -->
+<hr/>
 <div style="width: 80%;">
-<h3>Modalidades de esta actividad</h3>
+<h5>Modalidades de esta actividad</h5>
   <?php                    
   if(isset($_alert) && $_alert){
     echo "<div id='aviso' class='alert $_alert_tipo' role='alert'>";
@@ -36,7 +36,7 @@ Despliegue de las modalidades de la actividad
   };
 
   ?>
-      <a href="<?php echo base_url('modalidad/addModalidad/').$actividad['act_code'];?>" class="btn btn-success" role="button"><i class="fas fa-calendar-plus"></i></a>
+      <a href="<?php echo base_url('modalidad/addModalidad/').$actividad['act_code'];?>" class="btn btn-success" role="button"><i class="fas fa-plus"></i> Nueva</a>
       <br><br>
       <table id="modalidades_table" class="table table-bordered table-hover" style="width:100%; font-size: smaller;">
           <thead class="thead-dark">  
@@ -57,6 +57,7 @@ Despliegue de las modalidades de la actividad
             "serverSide": false,
             "paging": false,
             "searching": false,
+            "info": false,
             "ajax":{
                 "url": "<?php echo base_url('modalidad/tabla/').$actividad['act_code'] ?>",
                 "dataType": "json",
@@ -66,8 +67,7 @@ Despliegue de las modalidades de la actividad
             "columns": [
                     { 
                         "data": "mod_tipo", 
-                        "searchable": false,  
-                        "width": "10%" 
+                        "searchable": false
                     },
                     { "data": "mod_precio" },
                     {

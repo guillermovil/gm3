@@ -10,7 +10,7 @@ class Modalidad extends CI_Controller{
     private function set_rules()
     {
         $this->form_validation->set_rules('mod_tipo', 'Tipo', 'required|alpha_numeric_spaces');
-        $this->form_validation->set_rules('mod_precio', 'Precio', 'required|decimal|greater_than[0]|less_than[10000]');
+        $this->form_validation->set_rules('mod_precio', 'Precio', 'required|numeric|greater_than[0]|less_than[10000]');
 
     }
     private function sinonull($dato){
@@ -19,6 +19,28 @@ class Modalidad extends CI_Controller{
         }else{
             return $dato;
         }
+    }
+
+    private function tipo($dato){
+        $nombre = $dato;
+        switch ($dato) {
+            case "d":
+                $nombre = "Diario";
+                break;
+            case "m2":
+                $nombre = "Mensual 2 x semana";
+                break;
+            case "m3":
+                $nombre = "Mensual 3 x semana";
+                break;
+            case "m6":
+                $nombre = "Mensual todos los días";
+                break;
+            case "s":
+                $nombre = "Semanal";
+                break;
+        }
+        return $nombre;        
     }
 
 
@@ -99,7 +121,7 @@ class Modalidad extends CI_Controller{
                 foreach ($modalidades as $mod)
                 {
                     $nestedData['act_code'] = $mod->act_code;
-                    $nestedData['mod_tipo'] = $mod->mod_tipo;
+                    $nestedData['mod_tipo'] = $this->tipo($mod->mod_tipo);
                     $nestedData['mod_precio'] = $mod->mod_precio;                   
                     $data[] = $nestedData;
                 }
