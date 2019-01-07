@@ -43,7 +43,6 @@ class Socio extends CI_Controller{
 
     public function index()
     {
-        $data['socios'] = $this->Socio_model->get_all_socios();
         $data['_view'] = 'socio/index';
         $data['_dt'] = 'true';
         $data['title'] = 'Socios';

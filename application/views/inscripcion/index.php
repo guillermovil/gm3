@@ -1,3 +1,12 @@
+<!-- 
+ins_id integer
+soc_id integer
+act_code text
+mod_tipo text
+ins_vencimiento
+-->
+
+
 <?php                    
 if(isset($_alert) && $_alert){
   echo "<div id='aviso' class='alert $_alert_tipo' role='alert'>";
@@ -9,16 +18,14 @@ if(isset($_alert) && $_alert){
 };
 
 ?>
-    <table id="socios_table" class="table table-bordered table-hover" style="width:100%; font-size: smaller;">
-        <thead class="thead-dark">
+    <table id="inscripciones_table" class="table table-bordered table-hover" style="width:100%; font-size: smaller;">
+        <thead class="thead-dark">  
             <tr>
                 <th>Id</th>
-                <th>Tipo doc</th>
-                <th>Nro doc</th>
-                <th>Apellido</th>
-                <th>Nombre</th>
-                <th>Email</th>
-                <th>Acciones</th>
+                <th>Actividad</th>
+                <th>Modalidad</th>
+                <th>Vencimiento</th>
+                <th>Acciones</th>                
             </tr>
         </thead>
     </table>
@@ -27,29 +34,30 @@ if(isset($_alert) && $_alert){
 <script src="<?php echo site_url('resources/datatables/dataTables.bootstrap4.min.js');?>"> </script>
 <script type="text/javascript">
     $(document).ready(function () {
-        $('#socios_table').DataTable({
+        $('#inscripciones_table').DataTable({
             "processing": true,
-            "serverSide": true,
+            "paging": false,
+            "searching": false,
+            "info": false,
             "ajax":{
-                "url": "<?php echo base_url('socio/tabla') ?>",
+                "url": "<?php echo base_url('inscripcion/tabla/').$soc_id; ?>",
                 "dataType": "json",
                 "type": "POST",
                 "data":{  '<?php echo $this->security->get_csrf_token_name(); ?>' : '<?php echo $this->security->get_csrf_hash(); ?>' }
             },
             "columns": [
-
-                    { "data":"soc_id", "width": "5%"},
-                    { "data":"soc_tipodoc", "width": "7%"},
-                    { "data":"soc_nrodoc", "width": "10%" },
-                    { "data":"soc_apellido" },
-                    { "data":"soc_nombre" },
-                    { "data":"soc_email" },
+                    { 
+                        "data": "ins_id", 
+                        "searchable": false,  
+                        "width": "5%" 
+                    },
+                    { "data": "act_nombre" },
+                    { "data": "mod_nombre" },
+                    { "data": "ins_vencimiento" },
                     {
                         "data": null,
                         render: function ( data, type, row ) {
-                            return `<a href="<?php echo site_url('socio/editSocio/'); ?>`+row.soc_id+`"" class="btn btn-info btn-sm" role="button"><i class="fas fa-pen"></i></a>
-                            <a href="<?php echo site_url('socio/deleteSocio/'); ?>`+row.soc_id+`"" class="btn btn-danger btn-sm" role="button"><i class="fas fa-trash-alt"></i></a>
-                            <a href="<?php echo site_url('inscripcion/index/'); ?>`+row.soc_id+`"" class="btn btn-success btn-sm" role="button"><i class="fas fa-dumbbell"></i></a>`;
+                            return `<a href="<?php echo site_url('inscripcion/deleteInscripcion/'); ?>`+row.ins_id+`"" class="btn btn-danger btn-sm" role="button"><i class="fas fa-trash-alt"></i></a>`;
                         },
                         "width": "10%"                   
                     }
@@ -58,6 +66,6 @@ if(isset($_alert) && $_alert){
         });
         $('#aviso').delay(4000).slideUp(200, function() {
             $(this).alert('close');
-        });
+        });        
     });
 </script>
