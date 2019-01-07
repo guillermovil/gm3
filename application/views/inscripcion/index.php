@@ -6,6 +6,7 @@ mod_tipo text
 ins_vencimiento
 -->
 
+<a href="<?php echo base_url('inscripcion/addInscripcion/').$soc_id;?>" class="btn btn-success" role="button"><i class="fas fa-plus"></i> Inscribir</a>
 
 <?php                    
 if(isset($_alert) && $_alert){

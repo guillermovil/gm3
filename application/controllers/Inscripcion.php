@@ -2,6 +2,7 @@
 <?php
 class Inscripcion extends CI_Controller{
 
+
     // ins_id integer
     // soc_id integer
     // act_code text
@@ -12,6 +13,7 @@ class Inscripcion extends CI_Controller{
     {
         parent::__construct();
         $this->load->model('Inscripcion_model');
+        $this->load->model('Actividad_model');
     } 
 
     private function set_rules()
@@ -19,6 +21,7 @@ class Inscripcion extends CI_Controller{
         $this->form_validation->set_rules('act_codigo', 'Actividad', 'required|alpha_numeric');
         $this->form_validation->set_rules('mod_tipo', 'Modalidad', 'required|alpha_numeric');
     }
+
     public function index($soc_id)
     {
         $data['_view'] = 'inscripcion/index';
@@ -51,41 +54,61 @@ class Inscripcion extends CI_Controller{
         return $nombre;        
     }
 
-    public function tabla($soc_id){
-            $columns = array( 
-								0 =>'ins_id',
-								1 =>'soc_id',
-								2 =>'act_code',
-								3 =>'mod_tipo',
-								4 =>'ins_vencimiento'
-                            );
-
-            $inscripciones = $this->Inscripcion_model->all($soc_id);
-            $data = array();
-            if(!empty($inscripciones))
-            {
-                foreach ($inscripciones as $ins)
-                {
-
-					$nestedData['ins_id'] = 	$ins->ins_id;
-					$nestedData['soc_id'] = 	$ins->soc_id;
-					$nestedData['act_code'] = 	$ins->act_code;
-					$nestedData['act_nombre'] = $ins->act_nombre;
-					$nestedData['mod_tipo'] = 	$ins->mod_tipo;
-					$nestedData['mod_nombre'] = $this->tipo($ins->mod_tipo);
-					$nestedData['ins_vencimiento'] = $ins->ins_vencimiento;
-          
-                    $data[] = $nestedData;
-                }
-            }
-              
-            $json_data = array(
-                        "draw"            => intval($this->input->post('draw')),  
-                        "data"            => $data   
-                        );
-                
-            echo json_encode($json_data); 
+    public function addInscripcion($soc_id) {
+        $this->load->helper(array('form', 'url'));
+        $data['_view'] = 'inscripcion/add-inscripcion';
+        $data['title'] = 'Inscripciones';
+        $data['subtitle'] = $this->Inscripcion_model->get_apelnom($soc_id);
+        $data['soc_id'] = $soc_id;
+        $actividades = $this->Actividad_model->get_actividades_small();
+         echo '<pre>';
+         print_r($actividades);
+         echo '</pre>';   
+        
+        // $opc = array();
+         foreach ($actividades as $act) {
+             $opc[($act['act_code'])] = $act['act_nombre'];
+         }
+          echo '<pre>';
+          print_r($opc);
+          echo '</pre>';   
+          exit;
+        $this->load->view('layouts/main-vertical',$data);
     }
 
+    public function tabla($soc_id){
+        $columns = array( 
+    						0 =>'ins_id',
+    						1 =>'soc_id',
+    						2 =>'act_code',
+    						3 =>'mod_tipo',
+    						4 =>'ins_vencimiento'
+                        );
+
+        $inscripciones = $this->Inscripcion_model->all($soc_id);
+        $data = array();
+        if(!empty($inscripciones))
+        {
+            foreach ($inscripciones as $ins)
+            {
+
+    			$nestedData['ins_id'] = 	$ins->ins_id;
+    			$nestedData['soc_id'] = 	$ins->soc_id;
+    			$nestedData['act_code'] = 	$ins->act_code;
+    			$nestedData['act_nombre'] = $ins->act_nombre;
+    			$nestedData['mod_tipo'] = 	$ins->mod_tipo;
+    			$nestedData['mod_nombre'] = $this->tipo($ins->mod_tipo);
+    			$nestedData['ins_vencimiento'] = $ins->ins_vencimiento;
+      
+                $data[] = $nestedData;
+            }
+        }
+          
+        $json_data = array(
+                    "draw" => intval($this->input->post('draw')),  
+                    "data" => $data   
+                    );                
+        echo json_encode($json_data); 
+    }
 }
 
