@@ -32,7 +32,16 @@ class Actividad_model extends CI_Model
         $this->db->order_by('act_nombre', 'asc');
         return $this->db->get('actividades')->result_array();
     }
-        
+    
+    function get_modalidades_small($act_code)
+    {
+        $this->db->select('mod_tipo');
+        $this->db->order_by('mod_tipo', 'asc');
+        $this->db->where('act_code',$act_code);
+        return $this->db->get('modalidades')->result_array();
+    }
+
+
     /*
      * function to add new actividad
      */

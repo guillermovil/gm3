@@ -60,20 +60,29 @@ class Inscripcion extends CI_Controller{
         $data['title'] = 'Inscripciones';
         $data['subtitle'] = $this->Inscripcion_model->get_apelnom($soc_id);
         $data['soc_id'] = $soc_id;
-        $actividades = $this->Actividad_model->get_actividades_small();
-         echo '<pre>';
-         print_r($actividades);
-         echo '</pre>';   
-        
-        // $opc = array();
-         foreach ($actividades as $act) {
-             $opc[($act['act_code'])] = $act['act_nombre'];
-         }
-          echo '<pre>';
-          print_r($opc);
-          echo '</pre>';   
-          exit;
+        $actividades = $this->Actividad_model->get_actividades_small();   
+        $opc = array();
+        $opc['0']='Seleccione actividad';
+		foreach ($actividades as $act) {
+			$opc[($act['act_code'])] = $act['act_nombre'];
+		} 
+		$data['actividades'] = $opc;
         $this->load->view('layouts/main-vertical',$data);
+    }
+
+    public function modalidades(){
+        $actividades = $this->Actividad_model->get_modalidades_small($this->input->post('act_code'));
+        $cadena="<select id='mod_tipo' class='form-control'>";
+        if (!$actividades or count($actividades)==0){
+			$cadena=$cadena."<option value='0'>Debe crear las modalidades de la actividad</option>";
+        }else{
+		foreach ($actividades as $act) {
+			$cadena=$cadena."<option value='{$act['mod_tipo']}'>{$this->tipo(($act['mod_tipo']))}</option>";
+		}         	
+        }
+
+		$cadena=$cadena."</select>";
+		echo $cadena;
     }
 
     public function tabla($soc_id){

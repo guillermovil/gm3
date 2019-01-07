@@ -13,52 +13,49 @@
 ?>
   <div class="form-row"> 
     <input type="hidden" class="form-control" id="soc_id" name="soc_id" value="<?php echo set_value('soc_id',@$soc_id); ?>">
-    <div class="col-sm-1">
-      <label class="text-muted" for="soc_tipodoc">Actividad:</label>
-      <input type="text" class="form-control" id="soc_tipodoc" name="soc_tipodoc" value="<?php echo set_value('soc_tipodoc'); ?>">
-    </div>
-     <div class="col-sm-3">
-      <label for="soc_nrodoc">Nro documento:</label>
-      <input type="text" class="form-control" id="soc_nrodoc" name="soc_nrodoc" value="<?php echo set_value('soc_nrodoc'); ?>">
-    </div>
-    <div class="col-sm-2">
-      <label for="soc_nacimiento">Nacimiento:</label>
-      <input type="date" class="form-control" id="soc_nacimiento" name="soc_nacimiento" value="<?php echo set_value('soc_nacimiento'); ?>">
+    <div class="col-sm-5">
+      <label class="text-muted" for="act_code">Actividad:</label>
+      <!-- <input type="text" class="form-control" id="act_code" name="act_code" value="<?php echo set_value('act_code'); ?>"> -->
+      <?php
+        $attrib = array('id' => 'act_code', 'class' => 'form-control');
+        echo form_dropdown('act_code', $actividades, '',$attrib);
+       ?>
     </div>
   </div>
-  <div class="form-row">
-    <div class="col-sm-3">
-      <label for="soc_apellido">Apellido:</label>
-      <input type="text" class="form-control" id="soc_apellido" name="soc_apellido" value="<?php echo set_value('soc_apellido'); ?>">
-    </div>
-    <div class="col-sm-3">
-      <label for="soc_nombre">Nombre:</label>
-      <input type="text" class="form-control" id="soc_nombre" name="soc_nombre" value="<?php echo set_value('soc_nombre'); ?>">
-    </div>
-  </div>
-  <div class="form-row">
-    <div class="col-sm-6">
-      <label for="soc_domicilio">Domicilio:</label>
-      <input type="text" class="form-control" id="soc_domicilio" name="soc_domicilio" value="<?php echo set_value('soc_domicilio'); ?>">
+  <div class="form-row"> 
+     <div class="col-sm-5">
+      <label for="mod_tipo">Modalidad:</label>
+      <?php
+        $attrib = array('id' => 'mod_tipo', 'class' => 'form-control');
+        echo form_dropdown('mod_tipo', '', '',$attrib);
+       ?>
     </div>
   </div>
-  <div class="form-row">  
-    <div class="col-sm-3">
-      <label for="soc_telefono">Telefono:</label>
-      <input type="text" class="form-control" id="soc_telefono" name="soc_telefono" value="<?php echo set_value('soc_telefono'); ?>">
-    </div>
-    <div class="col-sm-3">
-      <label for="soc_email">Email:</label>
-      <input type="email" class="form-control" id="soc_email" name="soc_email" value="<?php echo set_value('soc_email'); ?>">
-    </div>
-  </div>
-  <div class="form-row">
-    <div class="col-sm-6">
-      <label for="soc_foto"><i class="fas fa-camera-retro"></i> Foto:</label>
-      <input type="file" class="form-control" id="soc_foto" name="soc_foto" style="height:43px; font-size:12px; font-color:gray;">
-      <span class="small text-muted"> Seleccionar una imágen (200 x 200 pixeles. Inferior a 500 kbytes) </span>
+  <div class="form-row"> 
+    <div class="col-sm-5">
+      <label for="ins_vencimiento">Vencimiento:</label>
+      <input type="date" class="form-control" id="ins_vencimiento" name="ins_vencimiento" value="<?php echo set_value('ins_vencimiento'); ?>">
     </div>
   </div>
   <br> 
-  <button type="submit" class="btn btn-primary">Submit</button>
+  <button type="submit" class="btn btn-primary">Inscribir</button>
 </form>
+<script type="text/javascript">
+  $(document).ready(
+    $('#act_code').on('change',function(){
+		var act_code = $(this).val();
+		if (act_code != ''){
+			$.ajax({
+				type: 'POST',
+				url: "<?php echo base_url();?>inscripcion/modalidades",
+				data: {act_code: act_code},
+				success:function(data){
+					$('#mod_tipo').html(data);
+				}
+
+			})
+		}       
+    })
+  )
+
+</script>
