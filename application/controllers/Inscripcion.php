@@ -16,11 +16,30 @@ class Inscripcion extends CI_Controller{
         $this->load->model('Actividad_model');
     } 
 
+
+    public function select_check($str){
+        if ($str == '0' or $str==''){
+            $this->form_validation->set_message('select_check', '{field}: Debe seleccionar una opción');
+            return false;
+        }else{
+            return true;
+        }
+    }
+
     private function set_rules()
     {
-        $this->form_validation->set_rules('act_codigo', 'Actividad', 'required|alpha_numeric');
-        $this->form_validation->set_rules('mod_tipo', 'Modalidad', 'required|alpha_numeric');
+        $this->form_validation->set_rules('act_code', 'Actividad', 'callback_select_check');
+        $this->form_validation->set_rules('mod_tipo', 'Modalidad', 'callback_select_check');
     }
+
+    private function sinonull($dato){
+        if ($dato == ''){
+            return null;
+        }else{
+            return $dato;
+        }
+    }
+
 
     public function index($soc_id)
     {
@@ -70,15 +89,65 @@ class Inscripcion extends CI_Controller{
         $this->load->view('layouts/main-vertical',$data);
     }
 
+    public function addInscripcionPost() {
+        $this->load->library('form_validation');
+        $this->form_validation->set_error_delimiters('<div class="alert alert-warning" role="alert">', '</div>');
+        $this->set_rules();
+        // echo '<pre>';
+        // print_r($_POST);
+        // echo '</pre>';         
+        // exit;
+        if ($this->form_validation->run() == FALSE){
+            // Se produjeron errores vuelve al form de inscripcion
+            $data['_view'] = 'inscripcion/add-inscripcion';
+            $data['title'] = 'Inscripciones del socio';
+            $data['subtitle'] = $this->Inscripcion_model->get_apelnom($this->input->post('soc_id'));;
+            $data['soc_id'] = $this->input->post('soc_id');
+            $actividades = $this->Actividad_model->get_actividades_small();   
+            $opc = array();
+            $opc['0']='Seleccione actividad';
+            foreach ($actividades as $act) {
+                $opc[($act['act_code'])] = $act['act_nombre'];
+            } 
+            $data['actividades'] = $opc;
+            $this->load->view('layouts/main-vertical',$data);
+        }else{
+            // Los datos para la inscripcion son correctos, guardar y volver al listado
+ 
+            // ins_id integer
+            // soc_id integer
+            // act_code text
+            // mod_tipo text
+            // ins_vencimiento
+
+            $data['soc_id'] = $this->input->post('soc_id');
+            $data['act_code'] = $this->input->post('act_code');
+            $data['mod_tipo'] = $this->input->post('mod_tipo');
+            $data['ins_vencimiento'] = $this->sinonull($this->input->post('ins_vencimiento'));              
+            
+            $this->Inscripcion_model->insert($data);
+
+            $data1['_view'] = 'inscripcion/index';
+            $data1['_dt'] = 'true';
+            $data1['title'] = 'Inscripciones del socio';
+            $data1['subtitle'] = $this->Inscripcion_model->get_apelnom($this->input->post('soc_id'));;
+            $data1['_alert'] = 'Registro guardado!';
+            $data1['_alert_tipo'] = 'alert-success';
+            $this->load->view('layouts/main-vertical',$data1);
+            
+        }
+    }
+
     public function modalidades(){
         $actividades = $this->Actividad_model->get_modalidades_small($this->input->post('act_code'));
-        $cadena="<select id='mod_tipo' class='form-control'>";
+        $cadena="<select id='mod_tipo' name='mod_tipo' class='form-control'>";
         if (!$actividades or count($actividades)==0){
 			$cadena=$cadena."<option value='0'>Debe crear las modalidades de la actividad</option>";
         }else{
-		foreach ($actividades as $act) {
-			$cadena=$cadena."<option value='{$act['mod_tipo']}'>{$this->tipo(($act['mod_tipo']))}</option>";
-		}         	
+            $cadena=$cadena."<option value='0'>Seleccione la modalidad</option>";
+    		foreach ($actividades as $act) {
+    			$cadena=$cadena."<option value='{$act['mod_tipo']}'>{$this->tipo(($act['mod_tipo']))}</option>";
+    		}         	
         }
 
 		$cadena=$cadena."</select>";

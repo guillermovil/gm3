@@ -15,7 +15,6 @@
     <input type="hidden" class="form-control" id="soc_id" name="soc_id" value="<?php echo set_value('soc_id',@$soc_id); ?>">
     <div class="col-sm-5">
       <label class="text-muted" for="act_code">Actividad:</label>
-      <!-- <input type="text" class="form-control" id="act_code" name="act_code" value="<?php echo set_value('act_code'); ?>"> -->
       <?php
         $attrib = array('id' => 'act_code', 'class' => 'form-control');
         echo form_dropdown('act_code', $actividades, '',$attrib);
@@ -32,7 +31,7 @@
     </div>
   </div>
   <div class="form-row"> 
-    <div class="col-sm-5">
+    <div class="col-sm-3">
       <label for="ins_vencimiento">Vencimiento:</label>
       <input type="date" class="form-control" id="ins_vencimiento" name="ins_vencimiento" value="<?php echo set_value('ins_vencimiento'); ?>">
     </div>

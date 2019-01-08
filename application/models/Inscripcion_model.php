@@ -15,7 +15,7 @@ class Inscripcion_model extends CI_Model
         
 
     function insert($params){
-        $this->db->insert('modalidades',$params);
+        $this->db->insert('inscripciones',$params);
         return true;
     }
     
