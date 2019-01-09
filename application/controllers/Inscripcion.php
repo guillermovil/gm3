@@ -130,7 +130,8 @@ class Inscripcion extends CI_Controller{
             $data1['_view'] = 'inscripcion/index';
             $data1['_dt'] = 'true';
             $data1['title'] = 'Inscripciones del socio';
-            $data1['subtitle'] = $this->Inscripcion_model->get_apelnom($this->input->post('soc_id'));;
+            $data1['subtitle'] = $this->Inscripcion_model->get_apelnom($this->input->post('soc_id'));
+            $data1['soc_id'] = $this->input->post('soc_id');
             $data1['_alert'] = 'Registro guardado!';
             $data1['_alert_tipo'] = 'alert-success';
             $this->load->view('layouts/main-vertical',$data1);
@@ -152,6 +153,43 @@ class Inscripcion extends CI_Controller{
 
 		$cadena=$cadena."</select>";
 		echo $cadena;
+    }
+
+    public function deleteInscripcion($ins_id,$soc_id) {
+        $delete =  $this->Inscripcion_model->delete($ins_id);
+
+        $data1['_view'] = 'inscripcion/index';
+        $data1['_dt'] = 'true';
+        $data1['title'] = 'Inscripciones del socio';
+        $data1['subtitle'] = $this->Inscripcion_model->get_apelnom($soc_id);
+        $data1['soc_id'] = $soc_id;
+        if ($delete) {
+            $data1['_alert'] = 'Registro eliminado!';
+            $data1['_alert_tipo'] = 'alert-danger';
+        }else{
+            $data1['_alert'] = 'No se pudo eliminar el registro!';
+            $data1['_alert_tipo'] = 'alert-warning';
+        }
+        $this->load->view('layouts/main-vertical',$data1);
+    }
+
+
+    public function closeInscripcion($ins_id,$soc_id) {
+        $close =  $this->Inscripcion_model->close($ins_id);
+
+        $data1['_view'] = 'inscripcion/index';
+        $data1['_dt'] = 'true';
+        $data1['title'] = 'Inscripciones del socio';
+        $data1['subtitle'] = $this->Inscripcion_model->get_apelnom($soc_id);
+        $data1['soc_id'] = $soc_id;
+        if ($close) {
+            $data1['_alert'] = 'La inscripción fue cerrada!';
+            $data1['_alert_tipo'] = 'alert-danger';
+        }else{
+            $data1['_alert'] = 'No se pudo cerrar la inscripción!';
+            $data1['_alert_tipo'] = 'alert-warning';
+        }
+        $this->load->view('layouts/main-vertical',$data1);
     }
 
     public function tabla($soc_id){

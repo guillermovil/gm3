@@ -7,15 +7,15 @@ ins_vencimiento
 -->
 
 <a href="<?php echo base_url('inscripcion/addInscripcion/').$soc_id;?>" class="btn btn-success" role="button"><i class="fas fa-plus"></i> Inscribir</a>
-
+<p></p>
 <?php                    
 if(isset($_alert) && $_alert){
-  echo "<div id='aviso' class='alert $_alert_tipo' role='alert'>";
-  echo $_alert;
-  echo "<button type='button' class='close' data-dismiss='alert' aria-label='Close'>";
-  echo "<span aria-hidden='true'>&times;</span>";
-  echo "</button>";
-  echo  "</div>";
+	echo "<div id='aviso' class='alert $_alert_tipo' role='alert'>";
+	echo $_alert;
+	echo "<button type='button' class='close' data-dismiss='alert' aria-label='Close'>";
+	echo "<span aria-hidden='true'>&times;</span>";
+	echo "</button>";
+	echo  "</div>";
 };
 
 ?>
@@ -58,7 +58,12 @@ if(isset($_alert) && $_alert){
                     {
                         "data": null,
                         render: function ( data, type, row ) {
-                            return `<a href="<?php echo site_url('inscripcion/deleteInscripcion/'); ?>`+row.ins_id+`"" class="btn btn-danger btn-sm" role="button"><i class="fas fa-trash-alt"></i></a>`;
+                        	if (row.ins_vencimiento=='' || !row.ins_vencimiento){
+                        		closeb = `  <a href="<?php echo site_url('inscripcion/closeInscripcion/'); ?>`+row.ins_id+'/'+row.soc_id+`"" class="btn btn-warning btn-sm" role="button"><i class="fas fa-ban"></i></a>`;
+                        	}else{
+                        		closeb=``;
+                        	}
+                            return `<a href="<?php echo site_url('inscripcion/deleteInscripcion/'); ?>`+row.ins_id+'/'+row.soc_id+`"" class="btn btn-danger btn-sm" role="button"><i class="fas fa-trash-alt"></i></a>`+closeb;
                         },
                         "width": "10%"                   
                     }

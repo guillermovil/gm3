@@ -19,13 +19,34 @@ class Inscripcion_model extends CI_Model
         return true;
     }
     
-    function delete($act_code, $mod_tipo){
-        if (!$this->db->delete('modalidades',array('act_code'=>$act_code, 'mod_tipo'=>$mod_tipo))) {
+    function delete($ins_id){
+        if (!$this->db->delete('inscripciones',array('ins_id'=>$ins_id))) {
             return false;
         }else{
             return true;
         }
     }
+
+
+    function close($ins_id)
+    {
+        $sql = "UPDATE inscripciones SET
+                    ins_vencimiento = now()
+                WHERE
+                    ins_id = {$ins_id};";
+        //echo $sql;       //debug query
+        //exit;
+
+        if (!$this->db->query($sql)) {
+            return false;
+        }else{
+            return true;
+        }        
+    }
+
+
+
+
     // ins_id
     // soc_id
     // act_code
