@@ -37,6 +37,8 @@ Despliegue de las modalidades de la actividad
 
   ?>
       <a href="<?php echo base_url('modalidad/addModalidad/').$actividad['act_code'];?>" class="btn btn-success" role="button"><i class="fas fa-plus"></i> Nueva</a>
+      <a href="<?php echo base_url('modalidad/updPrecios/').$actividad['act_code'];?>" class="btn btn-warning" role="button"><i class="fas fa-tags"></i> Actualizar precios</a>
+
       <br><br>
       <table id="modalidades_table" class="table table-bordered table-hover" style="width:100%; font-size: smaller;">
           <thead class="thead-dark">  
@@ -70,7 +72,8 @@ Despliegue de las modalidades de la actividad
                     {
                         "data": null,
                         render: function ( data, type, row ) {
-                            return `<a href="<?php echo site_url('modalidad/deleteModalidad/'); ?>`+row.act_code+`/`+row.mod_tipo+`"" class="btn btn-danger btn-sm" role="button"><i class="fas fa-trash-alt"></i></a>`;
+                            return `<a href="<?php echo site_url('modalidad/editModalidad/'); ?>`+row.act_code+`/`+row.mod_tipo+`" class="btn btn-success btn-sm" role="button"><i class="fas fa-dollar-sign"></i></a>
+                            <a href="<?php echo site_url('modalidad/deleteModalidad/'); ?>`+row.act_code+`/`+row.mod_tipo+`"" class="btn btn-danger btn-sm" role="button"><i class="fas fa-trash-alt"></i></a>`;
                         },
                         "width": "10%"                   
                     }

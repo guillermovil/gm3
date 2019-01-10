@@ -11,7 +11,7 @@ class Modalidad extends CI_Controller{
     {
         $this->form_validation->set_rules('mod_tipo', 'Tipo', 'required|alpha_numeric_spaces');
         $this->form_validation->set_rules('mod_precio', 'Precio', 'required|numeric|greater_than[0]|less_than[10000]');
-
+        
     }
     private function sinonull($dato){
         if ($dato == ''){
@@ -56,6 +56,7 @@ class Modalidad extends CI_Controller{
     public function addModalidadPost() {
         $this->load->library('form_validation');
         $this->form_validation->set_error_delimiters('<div class="alert alert-warning" role="alert">', '</div>');
+        $this->form_validation->reset_validation();
         $this->set_rules();
         // echo '<pre>';
         // print_r($_POST);
@@ -91,6 +92,118 @@ class Modalidad extends CI_Controller{
             
         }
     }
+
+    public function editModalidad($act_code, $mod_tipo) {
+        $this->load->helper(array('form', 'url'));
+        $data['_view'] = 'modalidad/edit-modalidad';
+        $data['title'] = 'Modalidades';
+        $actividad = $this->Actividad_model->get_actividad($act_code)['act_nombre'];
+        $data['subtitle'] = 'Editar precio de: '.$actividad.' - '.$this->tipo($mod_tipo) ;
+        $data['modalidad'] =  $this->Modalidad_model->get_modalidad($act_code, $mod_tipo);
+        
+        $this->load->view('layouts/main-vertical',$data);
+    }
+
+    public function editModalidadPost() {      
+        $this->load->library('form_validation');
+        $this->form_validation->set_error_delimiters('<div class="alert alert-warning" role="alert">', '</div>');
+        $this->form_validation->reset_validation();
+        $this->set_rules();
+
+        if ($this->form_validation->run() == FALSE){
+            $data['_view'] = 'modalidad/edit-modalidad';
+            $data['title'] = 'Modalidades';
+            $actividad = $this->Actividad_model->get_actividad($this->input->post('act_code'))['act_nombre'];
+            $data['subtitle'] = 'Editar precio de: '.$actividad.' - '.$this->tipo($this->input->post('mod_tipo')) ;
+            
+            $this->load->view('layouts/main-vertical',$data);
+
+        }else{
+            $data['act_code']   = $this->input->post('act_code');
+            $data['mod_tipo']   = $this->input->post('mod_tipo');
+            $data['mod_precio'] = $this->input->post('mod_precio');
+            $update = $this->Modalidad_model->update($this->input->post('act_code'),$this->input->post('mod_tipo'),$data);
+
+            $this->load->helper(array('form', 'url'));
+            $data1['_view'] = 'actividad/edit-actividad';
+            $data1['title'] = 'Actividades';
+            $data1['_dt'] = 'true';
+            $data1['subtitle'] = 'Editar datos de la actividad';
+
+            if ($update) {
+                $data1['_alert'] = 'Registro guardado!';
+                $data1['_alert_tipo'] = 'alert-success';                
+            }else{
+                $data1['_alert'] = 'El registro no se pudo modificar!';
+                $data1['_alert_tipo'] = 'alert-warning';                
+            }
+
+            $data1['actividad'] =  $this->Actividad_model->get_actividad($this->input->post('act_code'));
+
+            $this->load->view('layouts/main-vertical',$data1);
+        }
+    }
+
+
+    public function updPrecios($act_code) {
+        $this->load->helper(array('form', 'url'));
+        $data['_view'] = 'modalidad/upd-precios';
+        $data['title'] = 'Actualización de precios';
+        $actividad = $this->Actividad_model->get_actividad($act_code)['act_nombre'];
+        $data['subtitle'] = 'Actualizar precios de: '.$actividad;
+        $data['act_code'] =  $act_code;
+        $data['upd_precio'] =  10.00;
+        
+        $this->load->view('layouts/main-vertical',$data);
+    }
+
+
+
+    public function updPreciosPost() {      
+        $this->load->library('form_validation');
+        $this->form_validation->set_error_delimiters('<div class="alert alert-warning" role="alert">', '</div>');
+        $this->form_validation->reset_validation();
+        $this->form_validation->set_rules('upd_precio', 'Porcentaje', 'required|numeric|greater_than[0]|less_than[100.01]');
+
+        if ($this->form_validation->run() == FALSE){
+            $data['_view'] = 'modalidad/upd-precios';
+            $data['title'] = 'Actualización de precios';
+            $actividad = $this->Actividad_model->get_actividad($this->input->post('act_code'))['act_nombre'];
+            $data['subtitle'] = 'actualizar precios de: '.$actividad ;
+            
+            $this->load->view('layouts/main-vertical',$data);
+
+        }else{
+            $porcentaje = 1+ $this->input->post('upd_precio') / 100.00;
+            if ($this->input->post('upd_all') == 1){
+                $update = $this->Modalidad_model->updPrecioAll($porcentaje);
+            }else{
+                $update = $this->Modalidad_model->updPrecio($this->input->post('act_code'),$porcentaje);    
+            }
+            
+
+            $this->load->helper(array('form', 'url'));
+            $data1['_view'] = 'actividad/edit-actividad';
+            $data1['title'] = 'Actividades';
+            $data1['_dt'] = 'true';
+            $data1['subtitle'] = 'Editar datos de la actividad';
+
+            if ($update) {
+                $data1['_alert'] = 'Precios actualizados!';
+                $data1['_alert_tipo'] = 'alert-success';                
+            }else{
+                $data1['_alert'] = 'Los precios no se pudieron actualizar!';
+                $data1['_alert_tipo'] = 'alert-warning';                
+            }
+
+            $data1['actividad'] =  $this->Actividad_model->get_actividad($this->input->post('act_code'));
+
+            $this->load->view('layouts/main-vertical',$data1);
+        }
+    }
+
+
+
     public function deleteModalidad($act_code,$mod_tipo) {
         $delete =  $this->Modalidad_model->delete($act_code,$mod_tipo);
 

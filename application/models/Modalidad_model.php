@@ -16,7 +16,39 @@ class Modalidad_model extends CI_Model
         $this->db->insert('modalidades',$params);
         return true;
     }
-    
+
+    function update($act_code,$mod_tipo, $params)
+    {
+        $this->db->where(array('act_code'=>$act_code, 'mod_tipo'=>$mod_tipo ));
+        if (!$this->db->update('modalidades',$params)){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    function updPrecio($act_code,$porcentaje)
+    {
+
+        $this->db->set('mod_precio', 'mod_precio * '.$porcentaje, FALSE);
+        $this->db->where(array('act_code'=>$act_code));
+        if (!$this->db->update('modalidades')){
+            return false;
+        }else{
+            return true;
+        }
+    }
+ 
+    function updPrecioAll($porcentaje)
+    {
+        $this->db->set('mod_precio', 'mod_precio * '.$porcentaje, FALSE);
+        if (!$this->db->update('modalidades')){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
     function delete($act_code, $mod_tipo){
         if (!$this->db->delete('modalidades',array('act_code'=>$act_code, 'mod_tipo'=>$mod_tipo))) {
             return false;

@@ -125,15 +125,20 @@ class Inscripcion extends CI_Controller{
             $data['mod_tipo'] = $this->input->post('mod_tipo');
             $data['ins_vencimiento'] = $this->sinonull($this->input->post('ins_vencimiento'));              
             
-            $this->Inscripcion_model->insert($data);
+            $insert = $this->Inscripcion_model->insert($data);
 
             $data1['_view'] = 'inscripcion/index';
             $data1['_dt'] = 'true';
             $data1['title'] = 'Inscripciones del socio';
             $data1['subtitle'] = $this->Inscripcion_model->get_apelnom($this->input->post('soc_id'));
             $data1['soc_id'] = $this->input->post('soc_id');
-            $data1['_alert'] = 'Registro guardado!';
-            $data1['_alert_tipo'] = 'alert-success';
+            if ($insert == true){
+                $data1['_alert'] = 'Registro guardado!';
+                $data1['_alert_tipo'] = 'alert-success';
+            }else{
+                $data1['_alert'] = 'No se pudo agregar la inscripción, posiblemente ya hay inscripción vigente para la misma actividad';
+                $data1['_alert_tipo'] = 'alert-warning';              
+            }
             $this->load->view('layouts/main-vertical',$data1);
             
         }
@@ -215,6 +220,7 @@ class Inscripcion extends CI_Controller{
     			$nestedData['mod_tipo'] = 	$ins->mod_tipo;
     			$nestedData['mod_nombre'] = $this->tipo($ins->mod_tipo);
     			$nestedData['ins_vencimiento'] = $ins->ins_vencimiento;
+                $nestedData['dif'] = $ins->dif;
       
                 $data[] = $nestedData;
             }

@@ -15,7 +15,14 @@ class Inscripcion_model extends CI_Model
         
 
     function insert($params){
-        $this->db->insert('inscripciones',$params);
+        
+        if (!$this->db->insert('inscripciones',$params)) {
+            return false;
+        }else{
+            return true;
+        }
+
+
         return true;
     }
     
@@ -55,7 +62,7 @@ class Inscripcion_model extends CI_Model
     // mod_tipo
     // ins_vencimiento
     function all($soc_id){   
-		$this->db->select('ins_id, soc_id, inscripciones.act_code, act_nombre, mod_tipo, ins_vencimiento');
+		$this->db->select("ins_id, soc_id, inscripciones.act_code, act_nombre, mod_tipo, ins_vencimiento, coalesce(ins_vencimiento,'2100-01-01'::timestamp)::date - CURRENT_DATE as dif");
 		$this->db->from('inscripciones');
 		$this->db->join('actividades', 'inscripciones.act_code = actividades.act_code');
 		$this->db->where(array('soc_id'=>$soc_id));

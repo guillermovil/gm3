@@ -54,16 +54,35 @@ if(isset($_alert) && $_alert){
                     },
                     { "data": "act_nombre" },
                     { "data": "mod_nombre" },
-                    { "data": "ins_vencimiento" },
+                    { 
+                        "data": "ins_vencimiento",
+                        render: function(data, type, row){
+                            if(type === "sort" || type === "type"){
+                                return data;
+                            }
+                            if (data !== null && data != ''){
+                                var fecha = new Date(data);
+
+                                let options = {  
+                                    year: 'numeric',
+                                    month: '2-digit',
+                                    day: '2-digit'
+                                }; 
+                                return fecha.toLocaleString('es-419',options);
+                            }else{
+                                return null;
+                            } 
+                        }
+                    },
                     {
                         "data": null,
                         render: function ( data, type, row ) {
-                        	if (row.ins_vencimiento=='' || !row.ins_vencimiento){
-                        		closeb = `  <a href="<?php echo site_url('inscripcion/closeInscripcion/'); ?>`+row.ins_id+'/'+row.soc_id+`"" class="btn btn-warning btn-sm" role="button"><i class="fas fa-ban"></i></a>`;
+                        	if (row.dif > 0){
+                        		closeb = `  <a href="<?php echo site_url('inscripcion/closeInscripcion/'); ?>`+row.ins_id+'/'+row.soc_id+`"" class="btn btn-warning btn-sm" title="Anular" role="button"><i class="fas fa-ban"></i></a>`;
                         	}else{
                         		closeb=``;
                         	}
-                            return `<a href="<?php echo site_url('inscripcion/deleteInscripcion/'); ?>`+row.ins_id+'/'+row.soc_id+`"" class="btn btn-danger btn-sm" role="button"><i class="fas fa-trash-alt"></i></a>`+closeb;
+                            return `<a href="<?php echo site_url('inscripcion/deleteInscripcion/'); ?>`+row.ins_id+'/'+row.soc_id+`"" class="btn btn-danger btn-sm" title="Eliminar" role="button"><i class="fas fa-trash-alt"></i></a>`+closeb;
                         },
                         "width": "10%"                   
                     }
