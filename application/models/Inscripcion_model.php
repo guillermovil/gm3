@@ -14,6 +14,22 @@ class Inscripcion_model extends CI_Model
     }
         
 
+    function get_details($ins_id){
+        $this->db->select("socios.soc_id, actividades.act_code, act_nombre, inscripciones.mod_tipo, mod_precio, ins_id, soc_apellido, soc_nombre");
+        $this->db->from('inscripciones');
+        $this->db->join('modalidades', 'inscripciones.act_code = modalidades.act_code and inscripciones.mod_tipo = modalidades.mod_tipo');    
+        $this->db->join('actividades', 'modalidades.act_code = modalidades.act_code');  
+        $this->db->join('socios', 'inscripciones.soc_id = socios.soc_id');  
+        $this->db->where(array('ins_id'=>$ins_id));
+        $query = $this->db->get();
+
+        if($query->num_rows()>0){
+            return $query->result(); 
+        }else{
+            return null;
+        }       
+    }
+
     function insert($params){
         
         if (!$this->db->insert('inscripciones',$params)) {

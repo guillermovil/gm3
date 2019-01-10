@@ -52,7 +52,22 @@ if(isset($_alert) && $_alert){
                         "searchable": false,  
                         "width": "5%" 
                     },
-                    { "data": "act_nombre" },
+
+
+
+                    {
+                        "data": "act_nombre",
+                        render: function ( data, type, row ) {
+                            if (row.dif > 0){
+                                closeb = '   <span class="badge badge-pill badge-primary"><i class="fas fa-check"></i></span>';
+                            }else{
+                                closeb = '';
+                            }
+                            return data + closeb;
+                        }                   
+                    },
+
+
                     { "data": "mod_nombre" },
                     { 
                         "data": "ins_vencimiento",
@@ -78,13 +93,15 @@ if(isset($_alert) && $_alert){
                         "data": null,
                         render: function ( data, type, row ) {
                         	if (row.dif > 0){
-                        		closeb = `  <a href="<?php echo site_url('inscripcion/closeInscripcion/'); ?>`+row.ins_id+'/'+row.soc_id+`"" class="btn btn-warning btn-sm" title="Anular" role="button"><i class="fas fa-ban"></i></a>`;
+                        		closeb = ` <a href="<?php echo site_url('inscripcion/closeInscripcion/'); ?>`+row.ins_id+'/'+row.soc_id+`"" class="btn btn-warning btn-sm" title="Anular" role="button"><i class="fas fa-ban"></i></a>`;
+                        		pay = `<a href="<?php echo site_url('cuenta/index/'); ?>`+row.ins_id+`" class="btn btn-primary btn-sm" title="Cuenta" role="button">$</a>`;
                         	}else{
                         		closeb=``;
+                        		pay = '';
                         	}
-                            return `<a href="<?php echo site_url('inscripcion/deleteInscripcion/'); ?>`+row.ins_id+'/'+row.soc_id+`"" class="btn btn-danger btn-sm" title="Eliminar" role="button"><i class="fas fa-trash-alt"></i></a>`+closeb;
+                            return pay+closeb+' '+`<a href="<?php echo site_url('inscripcion/deleteInscripcion/'); ?>`+row.ins_id+'/'+row.soc_id+`"" class="btn btn-danger btn-sm" title="Eliminar" role="button"><i class="fas fa-trash-alt"></i></a>`;
                         },
-                        "width": "10%"                   
+                        "width": "15%"                   
                     }
                ]     
 

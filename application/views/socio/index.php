@@ -39,7 +39,7 @@ if(isset($_alert) && $_alert){
             "columns": [
 
                     { "data":"soc_id", "width": "5%"},
-                    { "data":"soc_tipodoc", "width": "7%"},
+                    { "data":"soc_tipodoc", "width": "10%"},
                     { "data":"soc_nrodoc", "width": "10%" },
                     { "data":"soc_apellido" },
                     { "data":"soc_nombre" },
@@ -48,10 +48,10 @@ if(isset($_alert) && $_alert){
                         "data": null,
                         render: function ( data, type, row ) {
                             return `<a href="<?php echo site_url('socio/editSocio/'); ?>`+row.soc_id+`"" class="btn btn-info btn-sm" role="button"><i class="fas fa-pen"></i></a>
-                            <a href="<?php echo site_url('socio/deleteSocio/'); ?>`+row.soc_id+`"" class="btn btn-danger btn-sm" role="button"><i class="fas fa-trash-alt"></i></a>
-                            <a href="<?php echo site_url('inscripcion/index/'); ?>`+row.soc_id+`"" class="btn btn-success btn-sm" role="button"><i class="fas fa-dumbbell"></i></a>`;
+                            <a href="<?php echo site_url('inscripcion/index/'); ?>`+row.soc_id+`"" class="btn btn-success btn-sm" role="button"><i class="fas fa-skating"></i></a>
+                            <a href="<?php echo site_url('socio/deleteSocio/'); ?>`+row.soc_id+`"" class="btn btn-danger btn-sm" role="button"><i class="fas fa-trash-alt"></i></a>`;
                         },
-                        "width": "10%"                   
+                        "width": "15%"                   
                     }
                ]     
 
