@@ -1,19 +1,3 @@
-<!-- 
-CREATE TABLE public.pagossocios
-(
-    ins_id integer NOT NULL DEFAULT nextval('pagossocios_ins_id_seq'::regclass),
-    ps_perdesde timestamp without time zone NOT NULL,
-    ps_perhasta timestamp without time zone,
-    ps_nrorecibo integer,
-    ps_valor numeric(10,2) NOT NULL,
-    ps_created timestamp without time zone NOT NULL DEFAULT now(),
-    CONSTRAINT pk_pagossocios_ins_id PRIMARY KEY (ins_id, ps_perdesde),
-    CONSTRAINT fk_pagossocios_inscripciones FOREIGN KEY (ins_id)
-        REFERENCES public.inscripciones (ins_id) MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION
-)
--->
 <?php
 class Cuenta extends CI_Controller{
 
@@ -24,10 +8,49 @@ class Cuenta extends CI_Controller{
         $this->load->model('Inscripcion_model');
     } 
 
+  	public function date_valid($date){
+  	// La fecha viene en formato yyyy-mm-dd
+  	//
+	    $parts = explode("-", $date);
+	    if (count($parts) == 3) {      
+	      if (checkdate($parts[1], $parts[2], $parts[0]))
+	      {
+	        return TRUE;
+	      }
+	    }else{
+			$this->form_validation->set_message('date_valid', 'El formato de la fecha {field} es incorrecto.');
+			return false;    	
+	    }
+	}
+
+	function mayor_que($hasta,$desde){
+		$hasta1 = strtotime($hasta);
+		$desde1 = strtotime($desde);
+		if ($hasta1 < $desde1){
+			$this->form_validation->set_message('mayor_que', 'El periodo es incorrecto.');
+			return false;       
+		}else{
+			return true;	
+		}
+	}
+
+    public function select_check($str){
+        if ($str == '0' or $str==''){
+            $this->form_validation->set_message('select_check', '{field}: Debe seleccionar una opción');
+            return false;
+        }else{
+            return true;
+        }
+    }
+
     private function set_rules()
     {
-        $this->form_validation->set_rules('act_code', 'Actividad', 'callback_select_check');
-        $this->form_validation->set_rules('mod_tipo', 'Modalidad', 'callback_select_check');
+        $this->form_validation->set_rules('ps_perdesde', 'Desde', 'required|callback_date_valid');
+        $this->form_validation->set_rules('ps_perhasta', 'Hasta', 'required|callback_date_valid|callback_mayor_que['.$this->input->post('ps_perdesde').']');
+        $this->form_validation->set_rules('ps_fecha'   , 'Fecha', 'required|callback_date_valid');
+        $this->form_validation->set_rules('ps_valor'   , 'Valor', 'required|greater_than_equal_to[0]'); 
+        $this->form_validation->set_rules('mp_code'    , 'Medio de pago', 'callback_select_check');
+       
     }
 
     private function sinonull($dato){
@@ -38,27 +61,6 @@ class Cuenta extends CI_Controller{
         }
     }
 
-    private function tipo($dato){
-        $nombre = $dato;
-        switch ($dato) {
-            case "d":
-                $nombre = "Diario";
-                break;
-            case "m2":
-                $nombre = "Mensual 2 x semana";
-                break;
-            case "m3":
-                $nombre = "Mensual 3 x semana";
-                break;
-            case "m6":
-                $nombre = "Mensual todos los días";
-                break;
-            case "s":
-                $nombre = "Semanal";
-                break;
-        }
-        return $nombre;        
-    }
 
     public function index($ins_id)
     {
@@ -68,138 +70,181 @@ class Cuenta extends CI_Controller{
         $data['title'] = 'Pagos del socio ';
         $data['ins_id'] = $ins_id;
         $detalles = $this->Inscripcion_model->get_details($ins_id);
-        $data['subtitle'] = $detalles[0]->soc_apellido +', '+$detalles[0]->soc_nombre;
+        $estado = $this->Cuenta_model->estadogral($ins_id);
+        $data['subtitle'] = $detalles[0]->soc_apellido .', '.$detalles[0]->soc_nombre;
         $data['soc_id'] = $detalles[0]->soc_id;
         $data['act_nombre'] = $detalles[0]->act_nombre;
-        $data['mod_tipo'] = $this->tipo($detalles[0]->mod_tipo);
+        $data['mod_tipo'] = $detalles[0]->mod_tipo;
+        $data['mod_descrip'] = $detalles[0]->mod_descrip;
         $data['mod_precio'] = $detalles[0]->mod_precio;
+
+        $data['estadogral'] = $estado[0]->cuenta;
         $this->load->view('layouts/main-vertical',$data);
     }
 
 
-    public function addInscripcion($soc_id) {
+    public function addPago($ins_id) {
         $this->load->helper(array('form', 'url'));
-        $data['_view'] = 'inscripcion/add-inscripcion';
-        $data['title'] = 'Inscripciones';
-        $data['subtitle'] = $this->Inscripcion_model->get_apelnom($soc_id);
-        $data['soc_id'] = $soc_id;
-        $actividades = $this->Actividad_model->get_actividades_small();   
+        $detalles = $this->Inscripcion_model->get_details($ins_id);
+        $data['_view'] = 'cuenta/add-pago';
+        $data['title'] = 'Pagos';
+        $data['subtitle'] = $detalles[0]->soc_apellido .', '.$detalles[0]->soc_nombre;
+        $data['ins_id'] = $detalles[0]->ins_id;
+        $data['act_nombre'] = $detalles[0]->act_nombre;
+        $data['mod_tipo'] = $detalles[0]->mod_tipo;
+        $data['mod_descrip'] = $detalles[0]->mod_descrip;
+        $data['mod_precio'] = $detalles[0]->mod_precio;
+        $periodo = $this->Cuenta_model->proxper($ins_id);
+        if($periodo and !is_null($periodo[0]->desde)){
+            $data['desde'] = $periodo[0]->desde;   
+            if(substr($detalles[0]->mod_tipo,0,1)=='m'){
+                $data['hasta'] = $periodo[0]->hasta;
+            }else{
+                $data['hasta'] = $periodo[0]->desde;
+            }
+        }else{
+            $data['desde'] = date('Y-m-d');
+            if(substr($detalles[0]->mod_tipo,0,1)=='m'){
+                $data['hasta'] = date('Y-m-d', strtotime("+1 months -1 day"));;
+            }else{
+                $data['hasta'] = date('Y-m-d');
+            }
+
+
+        }
+
+
+        $medios = $this->Cuenta_model->get_mpago_small();   
         $opc = array();
-        $opc['0']='Seleccione actividad';
-		foreach ($actividades as $act) {
-			$opc[($act['act_code'])] = $act['act_nombre'];
-		} 
-		$data['actividades'] = $opc;
+        $opc['0']='Seleccione medio de pago';
+        foreach ($medios as $mp) {
+            $opc[($mp['mp_code'])] = $mp['mp_descrip'];
+        } 
+        $data['medios'] = $opc;        
+
+        // echo '<pre>';
+        // print_r($data);
+        // echo '</pre>';         
+        // exit;
+
         $this->load->view('layouts/main-vertical',$data);
     }
 
-    public function addInscripcionPost() {
+    public function addPagoPost() {
         $this->load->library('form_validation');
         $this->form_validation->set_error_delimiters('<div class="alert alert-warning" role="alert">', '</div>');
         $this->set_rules();
+        
+
         // echo '<pre>';
         // print_r($_POST);
         // echo '</pre>';         
         // exit;
+        $ins_id = $this->input->post('ins_id');;
         if ($this->form_validation->run() == FALSE){
             // Se produjeron errores vuelve al form de inscripcion
-            $data['_view'] = 'inscripcion/add-inscripcion';
-            $data['title'] = 'Inscripciones del socio';
-            $data['subtitle'] = $this->Inscripcion_model->get_apelnom($this->input->post('soc_id'));;
-            $data['soc_id'] = $this->input->post('soc_id');
-            $actividades = $this->Actividad_model->get_actividades_small();   
+            $detalles = $this->Inscripcion_model->get_details($ins_id);
+	        $data['_view'] = 'cuenta/add-pago';
+	        $data['title'] = 'Pagos';
+	        $data['subtitle'] = $detalles[0]->soc_apellido .', '.$detalles[0]->soc_nombre;
+	        $data['ins_id'] = $detalles[0]->ins_id;
+	        $data['act_nombre'] = $detalles[0]->act_nombre;
+	        $data['mod_tipo'] = $detalles[0]->mod_tipo;
+            $data['mod_descrip'] = $detalles[0]->mod_descrip;
+
+	        $data['mod_precio'] = $detalles[0]->mod_precio;
+	        $periodo = $this->Cuenta_model->proxper($ins_id);
+	        if($periodo and !is_null($periodo[0]->desde)){
+	            $data['desde'] = $periodo[0]->desde;   
+	            if(substr($detalles[0]->mod_tipo,0,1)=='m'){
+	                $data['hasta'] = $periodo[0]->hasta;
+	            }else{
+	                $data['hasta'] = $periodo[0]->desde;
+	            }
+	        }else{
+	            $data['desde'] = date('Y-m-d');
+	            $data['hasta'] = date('Y-m-d');
+	        }
+
+            $medios = $this->Cuenta_model->get_mpago_small();   
             $opc = array();
-            $opc['0']='Seleccione actividad';
-            foreach ($actividades as $act) {
-                $opc[($act['act_code'])] = $act['act_nombre'];
+            $opc['0']='Seleccione medio de pago';
+            foreach ($medios as $mp) {
+                $opc[($mp['mp_code'])] = $mp['mp_descrip'];
             } 
-            $data['actividades'] = $opc;
+            $data['medios'] = $opc; 
+
             $this->load->view('layouts/main-vertical',$data);
         }else{
-            // Los datos para la inscripcion son correctos, guardar y volver al listado
- 
-            // ins_id integer
-            // soc_id integer
-            // act_code text
-            // mod_tipo text
-            // ins_vencimiento
+            // Los datos del pago son correctos, guardar y volver al listado
 
-            $data['soc_id'] = $this->input->post('soc_id');
-            $data['act_code'] = $this->input->post('act_code');
-            $data['mod_tipo'] = $this->input->post('mod_tipo');
-            $data['ins_vencimiento'] = $this->sinonull($this->input->post('ins_vencimiento'));              
+        	
+            $data['ins_id'] = $ins_id;
+            $data['ps_perdesde'] = $this->input->post('ps_perdesde');
+            $data['ps_perhasta'] = $this->input->post('ps_perhasta');
+            $data['ps_nrorecibo'] = $this->sinonull($this->input->post('ps_nrorecibo'));
+            $data['ps_fecha'] = $this->input->post('ps_fecha');
+            $data['ps_valor'] = $this->input->post('ps_valor'); 
+            $data['mp_code'] = $this->input->post('mp_code'); 
+
             
-            $insert = $this->Inscripcion_model->insert($data);
+            $insert = $this->Cuenta_model->insert($data);
 
-            $data1['_view'] = 'inscripcion/index';
-            $data1['_dt'] = 'true';
-            $data1['title'] = 'Inscripciones del socio';
-            $data1['subtitle'] = $this->Inscripcion_model->get_apelnom($this->input->post('soc_id'));
-            $data1['soc_id'] = $this->input->post('soc_id');
+	        $data1['_view'] = 'cuenta/index';
+	        $data1['_dt'] = 'true';
+	        $data1['title'] = 'Pagos del socio ';
+	        $data1['ins_id'] = $ins_id;
+	        $detalles = $this->Inscripcion_model->get_details($ins_id);
+	        $estado = $this->Cuenta_model->estadogral($ins_id);
+	        $data1['subtitle'] = $detalles[0]->soc_apellido .', '.$detalles[0]->soc_nombre;
+	        $data1['soc_id'] = $detalles[0]->soc_id;
+	        $data1['act_nombre'] = $detalles[0]->act_nombre;
+            $data1['mod_tipo'] = $detalles[0]->mod_tipo;
+            $data1['mod_descrip'] = $detalles[0]->mod_descrip;
+	        $data1['mod_precio'] = $detalles[0]->mod_precio;
+	        $data1['estadogral'] = $estado[0]->cuenta;
             if ($insert == true){
-                $data1['_alert'] = 'Registro guardado!';
+                $data1['_alert'] = 'Pago guardado!';
                 $data1['_alert_tipo'] = 'alert-success';
             }else{
-                $data1['_alert'] = 'No se pudo agregar la inscripción, posiblemente ya hay inscripción vigente para la misma actividad';
+                $data1['_alert'] = 'No se pudo registrar el pago, posible repetición de periodo';
                 $data1['_alert_tipo'] = 'alert-warning';              
-            }
-            $this->load->view('layouts/main-vertical',$data1);
-            
+            }        
+	        $this->load->view('layouts/main-vertical',$data1);
+
         }
     }
 
-    public function modalidades(){
-        $actividades = $this->Actividad_model->get_modalidades_small($this->input->post('act_code'));
-        $cadena="<select id='mod_tipo' name='mod_tipo' class='form-control'>";
-        if (!$actividades or count($actividades)==0){
-			$cadena=$cadena."<option value='0'>Debe crear las modalidades de la actividad</option>";
-        }else{
-            $cadena=$cadena."<option value='0'>Seleccione la modalidad</option>";
-    		foreach ($actividades as $act) {
-    			$cadena=$cadena."<option value='{$act['mod_tipo']}'>{$this->tipo(($act['mod_tipo']))}</option>";
-    		}         	
-        }
 
-		$cadena=$cadena."</select>";
-		echo $cadena;
-    }
+    public function deletePago($ins_id,$ps_perdesde) {
+        //Se agrega el urldecode porque sino el espacio en blanco
+        //viene reemplazado por %20
+        $delete =  $this->Cuenta_model->delete($ins_id,urldecode($ps_perdesde));
 
-    public function deleteInscripcion($ins_id,$soc_id) {
-        $delete =  $this->Inscripcion_model->delete($ins_id);
-
-        $data1['_view'] = 'inscripcion/index';
+        $data1['_view'] = 'cuenta/index';
         $data1['_dt'] = 'true';
-        $data1['title'] = 'Inscripciones del socio';
-        $data1['subtitle'] = $this->Inscripcion_model->get_apelnom($soc_id);
-        $data1['soc_id'] = $soc_id;
-        if ($delete) {
+        $data1['title'] = 'Pagos del socio ';
+        $data1['ins_id'] = $ins_id;
+        $detalles = $this->Inscripcion_model->get_details($ins_id);
+        $estado = $this->Cuenta_model->estadogral($ins_id);
+        $data1['subtitle'] = $detalles[0]->soc_apellido .', '.$detalles[0]->soc_nombre;
+        $data1['soc_id'] = $detalles[0]->soc_id;
+        $data1['act_nombre'] = $detalles[0]->act_nombre;
+        $data1['mod_tipo'] = $detalles[0]->mod_tipo;
+        $data1['mod_descrip'] = $detalles[0]->mod_descrip;
+
+        $data1['mod_precio'] = $detalles[0]->mod_precio;
+        $data1['estadogral'] = $estado[0]->cuenta;
+        if ($delete == true){
             $data1['_alert'] = 'Registro eliminado!';
             $data1['_alert_tipo'] = 'alert-danger';
         }else{
-            $data1['_alert'] = 'No se pudo eliminar el registro!';
-            $data1['_alert_tipo'] = 'alert-warning';
-        }
+            $data1['_alert'] = 'No se pudo eliminar el registro';
+            $data1['_alert_tipo'] = 'alert-warning';              
+        }        
         $this->load->view('layouts/main-vertical',$data1);
     }
 
-
-    public function closeInscripcion($ins_id,$soc_id) {
-        $close =  $this->Inscripcion_model->close($ins_id);
-
-        $data1['_view'] = 'inscripcion/index';
-        $data1['_dt'] = 'true';
-        $data1['title'] = 'Inscripciones del socio';
-        $data1['subtitle'] = $this->Inscripcion_model->get_apelnom($soc_id);
-        $data1['soc_id'] = $soc_id;
-        if ($close) {
-            $data1['_alert'] = 'La inscripción fue cerrada!';
-            $data1['_alert_tipo'] = 'alert-danger';
-        }else{
-            $data1['_alert'] = 'No se pudo cerrar la inscripción!';
-            $data1['_alert_tipo'] = 'alert-warning';
-        }
-        $this->load->view('layouts/main-vertical',$data1);
-    }
 
     /*ins_id integer NOT NULL DEFAULT nextval('pagossocios_ins_id_seq'::regclass),
     ps_perdesde timestamp without time zone NOT NULL,
@@ -219,20 +264,20 @@ class Cuenta extends CI_Controller{
                             6 =>'ps_created',
                         );
 
-        $pagossocios = $this->Pago_model->all($ins_id);
+        $pagossocios = $this->Cuenta_model->all($ins_id);
         $data = array();
-        if(!empty($inscripciones))
+        if(!empty($pagossocios))
         {
-            foreach ($inscripciones as $ins)
+            foreach ($pagossocios as $ps)
             {
 
-    			$nestedData['ins_id'] = 	$ins->ins_id;
-    			$nestedData['ps_perdesde'] = 	$ins->ps_perdesde;
-    			$nestedData['ps_perhasta'] = 	$ins->ps_perhasta;
-    			$nestedData['ps_nrorecibo'] = $ins->ps_nrorecibo;
-    			$nestedData['ps_fecha'] = 	$ins->ps_fecha;
-    			$nestedData['ps_valor'] = $ins->ps_valor;
-    			$nestedData['ps_created'] = $ins->ps_created;
+    			$nestedData['ins_id'] = 	$ps->ins_id;
+    			$nestedData['ps_perdesde'] = 	$ps->ps_perdesde;
+    			$nestedData['ps_perhasta'] = 	$ps->ps_perhasta;
+    			$nestedData['ps_nrorecibo'] = $ps->ps_nrorecibo;
+    			$nestedData['ps_fecha'] = 	$ps->ps_fecha;
+    			$nestedData['ps_valor'] = $ps->ps_valor;
+    			$nestedData['ps_created'] = $ps->ps_created;
       
                 $data[] = $nestedData;
             }

@@ -35,10 +35,12 @@ class Actividad_model extends CI_Model
     
     function get_modalidades_small($act_code)
     {
-        $this->db->select('mod_tipo');
-        $this->db->order_by('mod_tipo', 'asc');
+        $this->db->select('modalidades.mod_tipo, mod_descrip');
+        $this->db->from('modalidades');
+        $this->db->join('tipomodalidad', 'modalidades.mod_tipo = tipomodalidad.mod_tipo');    
+        $this->db->order_by('mod_descrip', 'asc');
         $this->db->where('act_code',$act_code);
-        return $this->db->get('modalidades')->result_array();
+        return $this->db->get()->result_array();
     }
 
 

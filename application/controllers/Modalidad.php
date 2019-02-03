@@ -7,9 +7,18 @@ class Modalidad extends CI_Controller{
         $this->load->model('Actividad_model');
     } 
 
+    public function select_check($str){
+        if ($str == '0' or $str==''){
+            $this->form_validation->set_message('select_check', '{field}: Debe seleccionar una opción');
+            return false;
+        }else{
+            return true;
+        }
+    }
+
     private function set_rules()
     {
-        $this->form_validation->set_rules('mod_tipo', 'Tipo', 'required|alpha_numeric_spaces');
+        $this->form_validation->set_rules('mod_tipo', 'Modalidad', 'callback_select_check');
         $this->form_validation->set_rules('mod_precio', 'Precio', 'required|numeric|greater_than[0]|less_than[10000]');
         
     }
@@ -21,35 +30,21 @@ class Modalidad extends CI_Controller{
         }
     }
 
-    private function tipo($dato){
-        $nombre = $dato;
-        switch ($dato) {
-            case "d":
-                $nombre = "Diario";
-                break;
-            case "m2":
-                $nombre = "Mensual 2 x semana";
-                break;
-            case "m3":
-                $nombre = "Mensual 3 x semana";
-                break;
-            case "m6":
-                $nombre = "Mensual todos los días";
-                break;
-            case "s":
-                $nombre = "Semanal";
-                break;
-        }
-        return $nombre;        
-    }
-
-
     public function addModalidad($act_code) {
         $this->load->helper(array('form', 'url'));
         $data['_view'] = 'modalidad/add-modalidad';
         $data['title'] = 'Modalidades';
         $data['subtitle'] = 'nueva modalidad para la actividad';
         $data['act_code'] = $act_code;
+
+        $modalidades = $this->Modalidad_model->get_tmodalidad_small();   
+        $opc = array();
+        $opc['0']='Seleccione modalidad';
+        foreach ($modalidades as $mod) {
+            $opc[($mod['mod_tipo'])] = $mod['mod_descrip'];
+        } 
+        $data['modalidades'] = $opc;
+
         $this->load->view('layouts/main-vertical',$data);
     }
 
@@ -68,6 +63,15 @@ class Modalidad extends CI_Controller{
             $data['title'] = 'Modalidades';
             $data['subtitle'] = 'nueva modalidad para la actividad';
             $data['act_code'] = $this->input->post('act_code');
+
+            $modalidades = $this->Modalidad_model->get_tmodalidad_small();   
+            $opc = array();
+            $opc['0']='Seleccione modalidad';
+            foreach ($modalidades as $mod) {
+                $opc[($mod['mod_tipo'])] = $mod['mod_descrip'];
+            } 
+            $data['modalidades'] = $opc;
+
             $this->load->view('layouts/main-vertical',$data);
 
         }else{
@@ -240,7 +244,7 @@ class Modalidad extends CI_Controller{
                 {
                     $nestedData['act_code'] = $mod->act_code;
                     $nestedData['mod_tipo'] = $mod->mod_tipo;
-                    $nestedData['mod_descrip'] = $this->tipo($mod->mod_tipo);
+                    $nestedData['mod_descrip'] = $mod->mod_descrip;
                     $nestedData['mod_precio'] = $mod->mod_precio;                   
                     $data[] = $nestedData;
                 }

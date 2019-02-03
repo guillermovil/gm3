@@ -28,10 +28,23 @@ if(isset($_alert) && $_alert){
 };
 
 ?>
-<h6>Datos adicionales</h6>
-<p>Actividad:  <?php echo $act_nombre; ?></p>
-<p>Modalidad:  <?php echo $mod_tipo; ?></p>
-<p>Precio Act: <?php echo $mod_precio; ?></p>
+
+	<div class="card" style="width: 22rem;">
+	  <div class="card-body">
+	    <p class="card-text">Actividad: <?php echo $act_nombre; ?><br>
+	    Modalidad: <?php echo $mod_descrip; ?><br>
+	    Precio: <?php echo $mod_precio; ?>
+	    <?php 
+	    	if ($estadogral == 0){
+	    		echo "<span class='badge badge-danger'>Posee deuda</span>";
+	    	}else{
+	    		echo "<span class='badge badge-success'>Al día</span>";
+	    	}
+	    ?></p>
+	  </div>
+	</div>
+	<p>
+
     <table id="pagos_table" class="table table-bordered table-hover" style="width:100%; font-size: smaller;">
         <thead class="thead-dark">  
             <tr>
@@ -51,7 +64,7 @@ if(isset($_alert) && $_alert){
 <script src="<?php echo site_url('resources/datatables/dataTables.bootstrap4.min.js');?>"> </script>
 <script type="text/javascript">
     $(document).ready(function () {
-        $('#inscripciones_table').DataTable({
+        $('#pagos_table').DataTable({
             "processing": true,
             "paging": true,
             "searching": true,
@@ -66,7 +79,7 @@ if(isset($_alert) && $_alert){
                     { 
                         "data": "ins_id", 
                         "searchable": false,  
-                        "width": "5%" 
+                        "visible": false
                     },
                     { 
                         "data": "ps_perdesde",
@@ -108,7 +121,10 @@ if(isset($_alert) && $_alert){
                             } 
                         }
                     },
-                    {"data": "ps_nrorecibo"},
+                    {
+                    	"data": "ps_nrorecibo",
+                    	"width": "7%" 
+                    },
                     { 
                         "data": "ps_fecha",
                         render: function(data, type, row){
@@ -129,7 +145,10 @@ if(isset($_alert) && $_alert){
                             } 
                         }
                     },
-                    {"data": "ps_valor"},                    
+                    {
+                    	"data": "ps_valor",
+						"className": "text-right"
+                    },                    
                     { 
                         "data": "ps_created",
                         render: function(data, type, row){
@@ -156,7 +175,7 @@ if(isset($_alert) && $_alert){
                         render: function ( data, type, row ) {
                             return `<a href="<?php echo site_url('cuenta/deletePago/'); ?>`+row.ins_id+'/'+row.ps_perdesde+`"" class="btn btn-danger btn-sm" title="Eliminar" role="button"><i class="fas fa-trash-alt"></i></a>`;
                         },
-                        "width": "15%"                   
+                        "width": "8%"                   
                     }
                ]     
 

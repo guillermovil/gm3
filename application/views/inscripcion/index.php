@@ -68,7 +68,7 @@ if(isset($_alert) && $_alert){
                     },
 
 
-                    { "data": "mod_nombre" },
+                    { "data": "mod_descrip" },
                     { 
                         "data": "ins_vencimiento",
                         render: function(data, type, row){

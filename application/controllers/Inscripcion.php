@@ -51,27 +51,6 @@ class Inscripcion extends CI_Controller{
         $this->load->view('layouts/main-vertical',$data);
     }
 
-    private function tipo($dato){
-        $nombre = $dato;
-        switch ($dato) {
-            case "d":
-                $nombre = "Diario";
-                break;
-            case "m2":
-                $nombre = "Mensual 2 x semana";
-                break;
-            case "m3":
-                $nombre = "Mensual 3 x semana";
-                break;
-            case "m6":
-                $nombre = "Mensual todos los días";
-                break;
-            case "s":
-                $nombre = "Semanal";
-                break;
-        }
-        return $nombre;        
-    }
 
     public function addInscripcion($soc_id) {
         $this->load->helper(array('form', 'url'));
@@ -152,7 +131,7 @@ class Inscripcion extends CI_Controller{
         }else{
             $cadena=$cadena."<option value='0'>Seleccione la modalidad</option>";
     		foreach ($actividades as $act) {
-    			$cadena=$cadena."<option value='{$act['mod_tipo']}'>{$this->tipo(($act['mod_tipo']))}</option>";
+    			$cadena=$cadena."<option value='{$act['mod_tipo']}'>{$act['mod_descrip']}</option>";
     		}         	
         }
 
@@ -198,13 +177,6 @@ class Inscripcion extends CI_Controller{
     }
 
     public function tabla($soc_id){
-        $columns = array( 
-    						0 =>'ins_id',
-    						1 =>'soc_id',
-    						2 =>'act_code',
-    						3 =>'mod_tipo',
-    						4 =>'ins_vencimiento'
-                        );
 
         $inscripciones = $this->Inscripcion_model->all($soc_id);
         $data = array();
@@ -218,7 +190,7 @@ class Inscripcion extends CI_Controller{
     			$nestedData['act_code'] = 	$ins->act_code;
     			$nestedData['act_nombre'] = $ins->act_nombre;
     			$nestedData['mod_tipo'] = 	$ins->mod_tipo;
-    			$nestedData['mod_nombre'] = $this->tipo($ins->mod_tipo);
+    			$nestedData['mod_descrip'] = $ins->mod_descrip;
     			$nestedData['ins_vencimiento'] = $ins->ins_vencimiento;
                 $nestedData['dif'] = $ins->dif;
       

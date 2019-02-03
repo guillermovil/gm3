@@ -35,6 +35,7 @@
 	</style>
 
 	<script src="<?php echo site_url('resources/bootstrap/js/jquery-3.3.1.min.js');?>"> </script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
 	<script src="<?php echo site_url('resources/bootstrap/js/bootstrap.min.js');?>"> </script>
 
 </head>
@@ -46,22 +47,25 @@
             <div class="sidebar-header">
 				<h4 align="center"><i class="fas fa-dumbbell"></i> Gym Gestión</h4>
             </div>
-
+            <div id="grupo">
             <ul class="list-unstyled components">
                 <!-- <p>Dummy Heading</p> -->
                 <li>
-                    <a href="#sociosmenu" data-toggle="collapse" aria-expanded="true" class="dropdown-toggle">Socios</a>
+                    <a href="<?php echo site_url('board');?>"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                </li>                
+                <li>
+                    <a href="#sociosmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" aria-controls="sociosmenu" data-parent="#grupo">Socios</a>
                     <ul class="collapse list-unstyled" id="sociosmenu">
-                        <li>
+                        <li id="socioslista">
                             <a href="<?php echo site_url('socio');?>"><i class="fas fa-th"></i> Lista de socios</a>
                         </li>
-                        <li>
+                        <li id="sociosnuevo">
                             <a href="<?php echo site_url('socio/addSocio');?>"><i class="fas fa-user-plus"></i> Nuevo socio</a>
                         </li>
                     </ul>
                 </li>
                 <li>
-                    <a href="#activmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Actividades</a>
+                    <a href="#activmenu" data-toggle="collapse" aria-expanded="false" aria-control="activmenu" class="dropdown-toggle" data-parent="#grupo">Actividades</a>
                     <ul class="collapse list-unstyled" id="activmenu">
                         <li>
                             <a href="<?php echo site_url('actividad');?>"><i class="fas fa-th"></i> Lista de actividades</a>
@@ -71,30 +75,12 @@
                         </li>
                     </ul>
                 </li>                
-                <li>
-                    <a href="#">About</a>
-                </li>
-                <li>
-                    <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Pages</a>
-                    <ul class="collapse list-unstyled" id="pageSubmenu">
-                        <li>
-                            <a href="#">Page 1</a>
-                        </li>
-                        <li>
-                            <a href="#">Page 2</a>
-                        </li>
-                        <li>
-                            <a href="#">Page 3</a>
-                        </li>
-                    </ul>
-                </li>
+
                 <li>
                     <a href="#">Portfolio</a>
                 </li>
-                <li>
-                    <a href="#">Contact</a>
-                </li>
             </ul>
+            </div>
             <p></p>
             <p></p>
  			<div class="col d-flex justify-content-center" style="margin-top: 70px !important;">
@@ -132,12 +118,6 @@
 
                     <div class="collapse navbar-collapse" style="font-size: smaller;" id="navbarSupportedContent">
                         <ul class="nav navbar-nav ml-auto">
-                            <li class="nav-item active">
-                                <a class="nav-link" href="#">Page</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Page</a>
-                            </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="#">Page</a>
                             </li>
@@ -160,6 +140,12 @@
             $('#sidebarCollapse').on('click', function () {
                 $('#sidebar').toggleClass('active');
             });
+			var $myGroup = $('#grupo');
+			$myGroup.on('show.bs.collapse','.collapse', function() {
+				$myGroup.find('.collapse.show').collapse('hide');
+			});   
+			$('#<?php echo $menu0; ?>').addClass( "show" );
+			$('#<?php echo $menu1; ?>').addClass( "active" );
         });
     </script>
 </body>

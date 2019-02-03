@@ -10,7 +10,7 @@ class Cuenta_model extends CI_Model
 
     function insert($params){
         
-        if (!$this->db->insert('inscripciones',$params)) {
+        if (!$this->db->insert('pagossocios',$params)) {
             return false;
         }else{
             return true;
@@ -20,8 +20,8 @@ class Cuenta_model extends CI_Model
         return true;
     }
     
-    function delete($ins_id){
-        if (!$this->db->delete('inscripciones',array('ins_id'=>$ins_id))) {
+    function delete($ins_id,$ps_perdesde){
+        if (!$this->db->delete('pagossocios',array('ins_id'=>$ins_id, 'ps_perdesde'=>$ps_perdesde))) {
             return false;
         }else{
             return true;
@@ -44,22 +44,51 @@ class Cuenta_model extends CI_Model
             return true;
         }        
     }
+    function get_mpago_small()
+    {
+        $this->db->select('mp_code, mp_descrip');
+        $this->db->order_by('mp_descrip', 'asc');
+        return $this->db->get('mediospago')->result_array();
+    }
 
+    function estadogral($ins_id)   {
+        //contar cuantas cuotas sin vencer tiene el nro de inscripción
+        $sql = "select 
+            count(ins_id) cuenta
+            from
+                inscripciones i
+                left join pagossocios p using (ins_id)
+            where 
+                ins_id = $ins_id
+                and p.ps_perhasta > current_timestamp";
+        $query = $this->db->query($sql);
+        if($query->num_rows()>0){
+            return $query->result(); 
+        }else{
+            return null;
+        }
+    }
 
+    function proxper($ins_id)   {
+        //contar cuantas cuotas sin vencer tiene el nro de inscripción
+        $sql = "select 
+        		(max(ps_perhasta) + interval '1 day')::date desde,
+        		(max(ps_perhasta) + interval '1 month')::date hasta 
+        	from pagossocios 
+        	where ins_id = $ins_id";
+        $query = $this->db->query($sql);
+        if($query->num_rows()>0){
+            return $query->result(); 
+        }else{
+            return null;
+        }
+    }
 
-
-    // ins_id
-    // soc_id
-    // act_code
-    // act_nombre
-    // mod_tipo
-    // mod_tipo
-    // ins_vencimiento
     function all($ins_id){   
 		$this->db->where(array('ins_id'=>$ins_id));
-        $this->db->order_by('ps_desde','DESC');
+        $this->db->order_by('ps_perdesde','DESC');
 
-		$query = $this->db->get();
+		$query = $this->db->get('pagossocios');
 
         if($query->num_rows()>0){
             return $query->result(); 
@@ -67,4 +96,61 @@ class Cuenta_model extends CI_Model
             return null;
         }
     }
+
+    function vencimientos(){   
+        $this->db->order_by('dias_vencer','DESC');
+
+		$query = $this->db->get('vw_board_vencimientos');
+
+        if($query->num_rows()>0){
+            return $query->result(); 
+        }else{
+            return null;
+        }
+    }
+
+    function superan(){   
+        $this->db->select('soc_apellido, soc_nombre, act_nombre, mod_descrip, semana, asistencias');
+        $this->db->where('asistencias > mod_xsemana');
+        $this->db->order_by('semana','DESC');
+        $query = $this->db->get('vw_board_asisxsemana');
+
+        if($query->num_rows()>0){
+            return $query->result(); 
+        }else{
+            return null;
+        }
+    }  
+
+   function board_caja_mp()   {
+        $sql = 'select mediospago.mp_descrip as descrip, sum(pagossocios.ps_valor) as valor
+                from
+                    pagossocios
+                    inner join mediospago ON mediospago.mp_code = pagossocios.mp_code
+                where ps_fecha = current_date
+                group by mediospago.mp_descrip';
+        $query = $this->db->query($sql);
+        if($query->num_rows()>0){
+            return $query->result(); 
+        }else{
+            return null;
+        }
+    }  
+   function board_caja_mp2()   {
+        $sql = '
+            select act_nombre descrip, sum(pagossocios.ps_valor) valor
+            from 
+                pagossocios
+                inner join inscripciones ON inscripciones.ins_id = pagossocios.ins_id
+                inner join actividades on actividades.act_code = inscripciones.act_code
+            where ps_fecha = current_date
+            group by act_nombre';
+        $query = $this->db->query($sql);
+        if($query->num_rows()>0){
+            return $query->result(); 
+        }else{
+            return null;
+        }
+    } 
+
 }

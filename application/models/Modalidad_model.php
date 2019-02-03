@@ -57,8 +57,20 @@ class Modalidad_model extends CI_Model
         }
     }
 
+
+    function get_tmodalidad_small()
+    {
+        $this->db->select('mod_tipo, mod_descrip');
+        $this->db->order_by('mod_descrip', 'asc');
+        return $this->db->get('tipomodalidad')->result_array();
+    }
+
     function all($act_code){   
-       $query = $this->db->get_where('modalidades',array('act_code'=>$act_code));
+        $this->db->from('modalidades');
+        $this->db->join('tipomodalidad', 'modalidades.mod_tipo = tipomodalidad.mod_tipo');    
+        $this->db->where(array('act_code'=>$act_code));
+        $query = $this->db->get();
+
         if($query->num_rows()>0){
             return $query->result(); 
         }else{

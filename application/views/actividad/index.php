@@ -41,11 +41,25 @@ if(isset($_alert) && $_alert){
                     { "data": "act_nombre" },
                     {
                         "data": null,
+                        "className": "text-center",
                         render: function ( data, type, row ) {
-                            return `<a href="<?php echo site_url('actividad/editActividad/'); ?>`+row.act_code+`"" class="btn btn-info btn-sm" role="button"><i class="fas fa-pen"></i></a>
-                            <a href="<?php echo site_url('actividad/deleteActividad/'); ?>`+row.act_code+`"" class="btn btn-danger btn-sm" role="button"><i class="fas fa-trash-alt"></i></a>`;
+                            return `
+                            <div class="btn-group dropleft">
+                              <button class="btn btn-sm" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-cog"></i>
+                              </button>
+                              <div class="dropdown-menu">
+                                <a class="dropdown-item" href="<?php echo site_url('actividad/editActividad/'); ?>`+row.act_code+`"">Editar</a>
+                                <a class="dropdown-item" href="<?php echo site_url('actividad/lsInscriptos'); ?>`+row.act_code+`"">Inscripciones</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="<?php echo site_url('actividad/deleteActividad/'); ?>`+row.act_code+`"">Eliminar <i class="fas fa-trash-alt"></i></a>
+
+                              </div>
+                            </div>
+
+                            `;
                         },
-                        "width": "10%"                   
+                        "width": "7%"                   
                     }
                ]     
 

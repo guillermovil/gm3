@@ -4,8 +4,24 @@ class Socio extends CI_Controller{
     {
         parent::__construct();
         $this->load->model('Socio_model');
+        $this->load->model('Inscripcion_model');        
         $this->load->library('session');
     } 
+
+    public function date_valid($date){
+    // La fecha viene en formato yyyy-mm-dd
+    //
+        $parts = explode("-", $date);
+        if (count($parts) == 3) {      
+          if (checkdate($parts[1], $parts[2], $parts[0]))
+          {
+            return TRUE;
+          }
+        }else{
+            $this->form_validation->set_message('date_valid', 'El formato de la fecha {field} es incorrecto.');
+            return false;       
+        }
+    }
 
     public function file_check($str){
         $allowed_mime_type_arr = array('image/gif','image/jpeg','image/pjpeg','image/png','image/x-png');
@@ -24,14 +40,19 @@ class Socio extends CI_Controller{
         }
     }
 
-    private function set_rules()
-    {
+    private function set_rules(){
         $this->form_validation->set_rules('soc_tipodoc', 'Tipo documento', 'in_list[DNI,PAS,OTRO]');
         $this->form_validation->set_rules('soc_nrodoc', 'Nro documento', 'required|alpha_numeric_spaces');
         $this->form_validation->set_rules('soc_apellido', 'Apellido', 'required|alpha');
         $this->form_validation->set_rules('soc_email', 'Email', 'required|valid_email');
         $this->form_validation->set_rules('soc_foto', 'Foto', 'callback_file_check');
     }
+
+    private function set_rules_asi(){
+        $this->form_validation->set_rules('asi_fecha', 'Fecha', 'required|callback_date_valid');
+    }
+
+
     private function sinonull($dato){
         if ($dato == ''){
             return null;
@@ -47,15 +68,19 @@ class Socio extends CI_Controller{
         $data['_dt'] = 'true';
         $data['title'] = 'Socios';
         $data['subtitle'] = 'Listado general';
+        $data['menu0'] = 'sociosmenu';
+        $data['menu1'] = 'socioslista';
+
         $this->load->view('layouts/main-vertical',$data);
     }
-
 
     public function addSocio() {
         $this->load->helper(array('form', 'url'));
         $data['_view'] = 'socio/add-socio';
         $data['title'] = 'Socios';
         $data['subtitle'] = 'nuevo socio';
+        $data['menu0'] = 'sociosmenu';
+        $data['menu1'] = 'sociosnuevo';        
         $this->load->view('layouts/main-vertical',$data);
     }
 
@@ -75,6 +100,8 @@ class Socio extends CI_Controller{
             $data['_view'] = 'socio/add-socio';
             $data['title'] = 'Socios';
             $data['subtitle'] = 'nuevo socio';
+            $data['menu0'] = 'sociosmenu';
+            $data['menu1'] = 'sociosnuevo';            
             $this->load->view('layouts/main-vertical',$data);
         }else{
 
@@ -88,6 +115,8 @@ class Socio extends CI_Controller{
 		            $data['_view'] = 'socio/add-socio';
 		            $data['title'] = 'Socios';
 		            $data['subtitle'] = 'nuevo socio';
+                    $data['menu0'] = 'sociosmenu';
+                    $data['menu1'] = 'sociosnuevo';
 		            $this->load->view('layouts/main-vertical',$data);
 
 	            }else{
@@ -125,6 +154,8 @@ class Socio extends CI_Controller{
 	            $data1['subtitle'] = 'Listado general';
 	            $data1['_alert'] = 'Registro guardado!';
 	            $data1['_alert_tipo'] = 'alert-success';
+                $data['menu0'] = 'sociosmenu';
+                $data['menu1'] = 'socioslista';
 	            $this->load->view('layouts/main-vertical',$data1);
 	        }
         }
@@ -299,5 +330,108 @@ class Socio extends CI_Controller{
         }
     }
 
-}
+    public function asistencia($socio_id) {
+        $this->load->helper(array('form', 'url'));
+        $data['_view'] = 'socio/asistencia';
+        $data['title'] = 'Socios';
+        
+        $data['socio'] =  $this->Socio_model->get_socio($socio_id);
 
+        $opciones = $this->Inscripcion_model->vigentes($socio_id);
+        if (!$opciones){
+            $data['subtitle'] = 'No está inscripto a ninguna actividad';
+            $data['opciones'] = array();
+        }else{
+            $data['subtitle'] = 'Asistencia del socio';
+            $opc=array();
+            foreach ($opciones as $x) {
+                $opc[($x['ins_id'])] = $x['act_nombre'].' '.$x['mod_descrip'];
+            } 
+            $data['opciones'] = $opc;            
+        }
+        // echo '<pre>';
+        // print_r($opciones);
+        // echo '</pre>';        
+        // exit;
+        $data['_dt'] = 'true';
+        $this->load->view('layouts/main-vertical',$data);
+    }    
+
+    public function asistenciaPost() {  
+        $this->load->library('form_validation');
+        $this->form_validation->set_error_delimiters('<div class="alert alert-warning" role="alert">', '</div>');
+        $this->set_rules_asi();
+
+        // echo '<pre>';
+        // print_r($_POST);
+        // echo '</pre>';
+        // if (@$_POST['opciones']){
+        //     foreach ($_POST['opciones'] as $key => $value) {
+        //         echo "$value <br>";
+        //     }
+        // }
+        // exit;
+
+        if ($this->form_validation->run() == FALSE){
+            $data['_view'] = 'socio/asistencia';
+            $data['title'] = 'Socios';
+            $data['subtitle'] = 'Asistencia del socio';
+            $data['socio'] =  $this->Socio_model->get_socio($socio_id);
+
+            $opciones = $this->Inscripcion_model->vigentes($socio_id);
+            $opc=array();
+            foreach ($opciones as $x) {
+                $opc[($x['ins_id'])] = $x['act_nombre'].' '.$x['mod_descrip'];
+            } 
+            $data['opciones'] = $opc;
+            $data['_dt'] = 'true';
+            $this->load->view('layouts/main-vertical',$data);
+        }else{
+            $data['asi_fecha'] = $this->input->post('asi_fecha');
+            $errortxt = '';
+            $insert = false;
+            if (@$_POST['opciones']){
+                foreach ($_POST['opciones'] as $key => $value) {
+                    $data['ins_id'] = $value;
+                    $insert = $this->Socio_model->insertAsi($data);
+                }
+            }else{
+                $errortxt = 'No seleccionó ninguna actividad';
+            }
+            
+            $data1['_view'] = 'socio/index';
+            $data1['_dt'] = 'true';
+            $data1['title'] = 'Socios';
+            $data1['subtitle'] = 'Listado general';
+            if ($insert == true && $errortxt ==''){
+                $data1['_alert'] = 'Asistencia guardada!';
+                $data1['_alert_tipo'] = 'alert-success';
+            }else{
+                $data1['_alert'] = 'No se pudo registrar la asistencia. '.$errortxt;
+                $data1['_alert_tipo'] = 'alert-warning';              
+            }        
+            $this->load->view('layouts/main-vertical',$data1);
+        }
+    }
+    public function tabla_asistencia($soc_id){
+        $asistencia = $this->Socio_model->asistencia($soc_id);
+        $data = array();
+        if(!empty($asistencia))
+        {
+            foreach ($asistencia as $ps)
+            {
+
+                $nestedData['asi_id'] =     $ps->asi_id;
+                $nestedData['asi_fecha'] =    $ps->asi_fecha;
+                $nestedData['act_nombre'] =    $ps->act_nombre;      
+                $data[] = $nestedData;
+            }
+        }
+          
+        $json_data = array(
+                    "draw" => intval($this->input->post('draw')),  
+                    "data" => $data   
+                    );                
+        echo json_encode($json_data); 
+    }
+}

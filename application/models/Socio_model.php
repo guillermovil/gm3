@@ -176,5 +176,57 @@ class Socio_model extends CI_Model
         return $query->num_rows();
     } 
 
+
+
+    function cumples()
+    {   
+       $query = $this
+                ->db
+                ->select("soc_apellido, soc_nombre, soc_nacimiento, abs(current_date - make_date(date_part('year',CURRENT_DATE)::int, date_part('month',soc_nacimiento)::int,  date_part('day',soc_nacimiento)::int)) dif")
+                ->where("abs(current_date - make_date(date_part('year',CURRENT_DATE)::int, date_part('month',soc_nacimiento)::int,  date_part('day',soc_nacimiento)::int)) < 2")
+                ->order_by("4","ASC")
+                ->get('socios');
+        
+        if($query->num_rows()>0)
+        {
+            return $query->result(); 
+        }
+        else
+        {
+            return null;
+        }
+        
+    }
+    function insertAsi($params){
+        
+        if (!$this->db->insert('asistencia',$params)) {
+            return false;
+        }else{
+            return true;
+        }
+    }
+    function asistencia($soc_id){   
+
+        $this->db->select("a.asi_id, a.asi_fecha, a1.act_nombre||' '||t.mod_descrip as act_nombre");
+        $this->db->from('asistencia a');
+        $this->db->join('inscripciones i', 'a.ins_id = i.ins_id');
+        $this->db->join('modalidades m1', 'i.act_code = m1.act_code AND i.mod_tipo = m1.mod_tipo');
+        $this->db->join('tipomodalidad t', 'm1.mod_tipo = t.mod_tipo');
+        $this->db->join('actividades a1', 'm1.act_code = a1.act_code');
+
+        $this->db->where(array('soc_id'=>$soc_id));
+        $this->db->order_by('asi_fecha','DESC');
+        $this->db->limit(100);
+
+
+        $query = $this->db->get();
+
+        if($query->num_rows()>0){
+            return $query->result(); 
+        }else{
+            return null;
+        }
+    }
+
 }
 

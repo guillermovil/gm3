@@ -25,6 +25,7 @@ if(isset($_alert) && $_alert){
 
 <script src="<?php echo site_url('resources/datatables/datatables.min.js');?>"> </script>
 <script src="<?php echo site_url('resources/datatables/dataTables.bootstrap4.min.js');?>"> </script>
+
 <script type="text/javascript">
     $(document).ready(function () {
         $('#socios_table').DataTable({
@@ -39,7 +40,7 @@ if(isset($_alert) && $_alert){
             "columns": [
 
                     { "data":"soc_id", "width": "5%"},
-                    { "data":"soc_tipodoc", "width": "10%"},
+                    { "data":"soc_tipodoc", "width": "8%"},
                     { "data":"soc_nrodoc", "width": "10%" },
                     { "data":"soc_apellido" },
                     { "data":"soc_nombre" },
@@ -47,11 +48,24 @@ if(isset($_alert) && $_alert){
                     {
                         "data": null,
                         render: function ( data, type, row ) {
-                            return `<a href="<?php echo site_url('socio/editSocio/'); ?>`+row.soc_id+`"" class="btn btn-info btn-sm" role="button"><i class="fas fa-pen"></i></a>
-                            <a href="<?php echo site_url('inscripcion/index/'); ?>`+row.soc_id+`"" class="btn btn-success btn-sm" role="button"><i class="fas fa-skating"></i></a>
-                            <a href="<?php echo site_url('socio/deleteSocio/'); ?>`+row.soc_id+`"" class="btn btn-danger btn-sm" role="button"><i class="fas fa-trash-alt"></i></a>`;
+                            return `
+                            <a href="<?php echo site_url('socio/asistencia/'); ?>`+row.soc_id+`"" class="btn btn-sm" title="Asistencia" role="button"><i class="far fa-hand-point-up"></i></a>&nbsp;&nbsp;
+                            <div class="btn-group dropleft">
+                              <button class="btn btn-sm" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-cog"></i>
+                              </button>
+                              <div class="dropdown-menu">
+                                <a class="dropdown-item" href="<?php echo site_url('socio/editSocio/'); ?>`+row.soc_id+`"">Editar</a>
+                                <a class="dropdown-item" href="<?php echo site_url('inscripcion/index/'); ?>`+row.soc_id+`"">Inscripciones</a>
+                                <a class="dropdown-item" href="<?php echo site_url('socio/asistencia/'); ?>`+row.soc_id+`"">Asistencia</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="<?php echo site_url('socio/deleteSocio/'); ?>`+row.soc_id+`"">Eliminar <i class="fas fa-trash-alt"></i></a>
+
+                              </div>
+                            </div>
+                            `;
                         },
-                        "width": "15%"                   
+                        "width": "10%"                   
                     }
                ]     
 

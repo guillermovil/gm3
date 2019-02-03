@@ -12,7 +12,7 @@ p {
     font-size: 0.9em;
     font-weight: 300;
     line-height: 1.5em;
-    color: #222;
+    color: #999;
 }
 
 a,
@@ -58,8 +58,8 @@ a:focus {
 #sidebar {
     min-width: 250px;
     max-width: 250px;
-    background: #aaa;
-    color: #222;
+    background: #2e4272;
+    color: #bbb;
     transition: all 0.3s;
 }
 
@@ -69,7 +69,8 @@ a:focus {
 
 #sidebar .sidebar-header {
     padding: 20px;
-    background: #ccc;
+    background: #061539;
+    color: #eee;
 }
 
 #sidebar ul.components {
@@ -78,7 +79,7 @@ a:focus {
 }
 
 #sidebar ul p {
-    color: #222;
+    color: #555;
     padding: 10px;
 }
 
@@ -89,14 +90,13 @@ a:focus {
 }
 
 #sidebar ul li a:hover {
-    color: #aaa;
-    background: #222;
+    color: #fff;
+    background: #162955;
 }
 
 #sidebar ul li.active>a,
 a[aria-expanded="true"] {
-    color: #222;
-    background: #ccc;
+    color: #fff;
 }
 
 
@@ -109,13 +109,24 @@ a[data-toggle="collapse"] {
     position: absolute;
     top: 50%;
     right: 20px;
-    transform: translateY(-50%);
+    color: #E3E300;
+}
+
+
+.dropdown-toggle[aria-expanded="true"]::after {
+  transform: rotate(180deg);
+}
+
+
+/*for the animation*/
+.dropdown-toggle::after {
+  transition: 0.2s;
 }
 
 ul ul a {
     font-size: 0.8em !important;
     padding-left: 30px !important;
-    background: #ccc;
+    background: #7887AB;
 }
 
 ul.CTAs {

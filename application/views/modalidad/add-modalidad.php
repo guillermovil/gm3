@@ -9,23 +9,10 @@
       <label class="text-muted" for="mod_tipo">Tipo:</label>
       <!-- <input type="text" class="form-control" id="mod_tipo" name="mod_tipo" value="<?php echo set_value('mod_tipo'); ?>"> -->
 
-      <select class="select form-control" id="mod_tipo" name="mod_tipo">
-       <option value="d">
-        Diario
-       </option>
-       <option value="m2">
-        Mensual 2 x semana
-       </option>
-       <option value="m3">
-        Mensual 3 x semana
-       </option>
-       <option value="m6">
-        Mensual todos los d&iacute;as
-       </option>
-       <option value="s">
-        Semanal
-       </option>
-      </select>
+      <?php
+        $attrib = array('id' => 'mod_tipo', 'class' => 'form-control');
+        echo form_dropdown('mod_tipo', $modalidades, '',$attrib);
+       ?>
     </div>
      <div class="col-sm-3">
       <label for="mod_precio">Precio:</label>
