@@ -50,9 +50,21 @@
             <div id="grupo">
             <ul class="list-unstyled components">
                 <!-- <p>Dummy Heading</p> -->
+   
+
                 <li>
-                    <a href="<?php echo site_url('board');?>"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-                </li>                
+                    <a href="#boardmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" aria-controls="boardmenu" data-parent="#grupo">Dashboards</a>
+                    <ul class="collapse list-unstyled" id="boardmenu">
+                        <li id="board1">
+                            <a href="<?php echo site_url('board');?>"><i class="fas fa-tachometer-alt"></i> Dashboard 1</a>
+                        </li>
+                        <li id="board2">
+                            <a href="#"><i class="fas fa-tachometer-alt"></i> Dashboard 2</a>
+                        </li>
+                    </ul>
+                </li>
+
+
                 <li>
                     <a href="#sociosmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" aria-controls="sociosmenu" data-parent="#grupo">Socios</a>
                     <ul class="collapse list-unstyled" id="sociosmenu">
@@ -67,18 +79,15 @@
                 <li>
                     <a href="#activmenu" data-toggle="collapse" aria-expanded="false" aria-control="activmenu" class="dropdown-toggle" data-parent="#grupo">Actividades</a>
                     <ul class="collapse list-unstyled" id="activmenu">
-                        <li>
+                        <li id="activlista">
                             <a href="<?php echo site_url('actividad');?>"><i class="fas fa-th"></i> Lista de actividades</a>
                         </li>
-                        <li>
+                        <li id="activnuevo">
                             <a href="<?php echo site_url('actividad/addActividad');?>"><i class="fas fa-plus"></i> Nueva actividad</a>
                         </li>
                     </ul>
                 </li>                
 
-                <li>
-                    <a href="#">Portfolio</a>
-                </li>
             </ul>
             </div>
             <p></p>
@@ -100,9 +109,8 @@
 			</div>
         </nav>
 <div>
-	<button type="button" id="sidebarCollapse" class="btn btn-sm">
+	<button type="button" id="sidebarCollapse" class="btn btn-sm" data-target="#sidebar">
 		<i class="fas fa-grip-vertical"></i>
-				<span></span>
 	</button>	
 </div>
         <!-- Page Content  -->
@@ -137,9 +145,6 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            $('#sidebarCollapse').on('click', function () {
-                $('#sidebar').toggleClass('active');
-            });
 			var $myGroup = $('#grupo');
 			$myGroup.on('show.bs.collapse','.collapse', function() {
 				$myGroup.find('.collapse.show').collapse('hide');

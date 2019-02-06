@@ -9,7 +9,7 @@ class Actividad extends CI_Controller{
     private function set_rules()
     {
         $this->form_validation->set_rules('act_code', 'Código', 'required|alpha_numeric_spaces');
-        $this->form_validation->set_rules('act_nombre', 'Nombre', 'required|alpha_numeric_spaces');
+        $this->form_validation->set_rules('act_nombre', 'Nombre', 'required');
 
     }
     private function sinonull($dato){
@@ -23,11 +23,13 @@ class Actividad extends CI_Controller{
 
     function index()
     {
-        $data['actividades'] = $this->Actividad_model->get_all_actividades();
+        //$data['actividades'] = $this->Actividad_model->get_all_actividades();
         $data['_view'] = 'actividad/index';
         $data['_dt'] = 'true';
         $data['title'] = 'Actividades';
         $data['subtitle'] = 'Listado general';
+        $data['menu0'] = 'activmenu';
+        $data['menu1'] = 'activlista';        
         $this->load->view('layouts/main-vertical',$data);
     }
 
@@ -36,6 +38,8 @@ class Actividad extends CI_Controller{
         $data['_view'] = 'actividad/add-actividad';
         $data['title'] = 'Actividades';
         $data['subtitle'] = 'nueva actividad';
+        $data['menu0'] = 'activmenu';
+        $data['menu1'] = 'activnuevo';                
         $this->load->view('layouts/main-vertical',$data);
     }
 
@@ -48,6 +52,8 @@ class Actividad extends CI_Controller{
             $data['_view'] = 'actividad/add-actividad';
             $data['title'] = 'Actividades';
             $data['subtitle'] = 'nueva actividad';
+            $data['menu0'] = 'activmenu';
+            $data['menu1'] = 'activnuevo';                            
             $this->load->view('layouts/main-vertical',$data);
         }else{
             $data['act_code'] = $this->sinonull($this->input->post('act_code'));
@@ -61,6 +67,8 @@ class Actividad extends CI_Controller{
             $data1['subtitle'] = 'Listado general';
             $data1['_alert'] = 'Registro guardado!';
             $data1['_alert_tipo'] = 'alert-success';
+            $data1['menu0'] = 'activmenu';
+            $data1['menu1'] = 'activlista';             
             $this->load->view('layouts/main-vertical',$data1);
             
         }
@@ -90,8 +98,10 @@ class Actividad extends CI_Controller{
         $data['title'] = 'Actividades';
         $data['_dt'] = 'true';
         $data['subtitle'] = 'Editar datos de la actividad';
-        $data['actividad'] =  $this->Actividad_model->get_actividad($actividad_id);
 
+        $data['actividad'] =  $this->Actividad_model->get_actividad($actividad_id);
+        $data['menu0'] = 'activmenu';
+        $data['menu1'] = 'activlista'; 
         $this->load->view('layouts/main-vertical',$data);
     }
 
@@ -104,6 +114,9 @@ class Actividad extends CI_Controller{
             $data['_view'] = 'actividad/edit-actividad';
             $data['title'] = 'Actividades';
             $data['subtitle'] = 'editar datos de la actividad';
+            $data['actividad'] =  $this->Actividad_model->get_actividad($this->input->post('act_code'));
+            $data['menu0'] = 'activmenu';
+            $data['menu1'] = 'activlista';            
             $this->load->view('layouts/main-vertical',$data);
         }else{
             $data['act_code'] = $this->sinonull($this->input->post('act_code'));
@@ -120,6 +133,8 @@ class Actividad extends CI_Controller{
                 $data1['_alert'] = 'El registro no se pudo modificar!';
                 $data1['_alert_tipo'] = 'alert-warning';                
             }
+            $data1['menu0'] = 'activmenu';
+            $data1['menu1'] = 'activlista';            
             $this->load->view('layouts/main-vertical',$data1);
         }
     }
