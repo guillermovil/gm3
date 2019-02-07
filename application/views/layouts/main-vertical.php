@@ -145,6 +145,9 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
+            $('#sidebarCollapse').on('click', function () {
+                $('#sidebar').toggleClass('active');
+            });            
 			var $myGroup = $('#grupo');
 			$myGroup.on('show.bs.collapse','.collapse', function() {
 				$myGroup.find('.collapse.show').collapse('hide');
