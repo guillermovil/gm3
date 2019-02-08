@@ -1,7 +1,8 @@
 <div class="container">
   <div class="row">
     <div class="col">
-    	<h5><span class="text-warning"><i class="far fa-calendar-alt"></i></span> Vencidos o próximos a vencer (2 días)</h5>
+        
+    	<h5><a href="#" id="act_vencimientos"><span class="text-warning"><i class="fas fa-redo-alt"></i></span></a> Vencidos o próximos a vencer (2 días)</h5>
 		<table id="board_vencimientos" class="table table-sm table-hover table-bordered" style="width:100%; font-size: 12px;">
 		    <thead class="thead-light">  
 		        <tr>
@@ -24,7 +25,7 @@
   </div>
   <div class="row">
     <div class="col">
-      <h5><span class="text-primary"><i class="fas fa-birthday-cake"></i></span> Cumpleaños!</h5>
+      <h5><a href="#" id="act_cumples"><span class="text-warning"><i class="fas fa-redo-alt"></i></span></a> Cumpleaños!</h5>
 
 		<table id="board_cumples" class="table table-sm table-hover table-bordered" style="width:100%; font-size: 12px;">
 		    <thead class="thead-light">  
@@ -37,7 +38,7 @@
 
     </div>
     <div class="col">
-      <h5><span class="text-danger"><i class="far fa-clock"></i></span> Superan la frecuencia semanal</h5>
+      <h5><a href="#" id="act_superan"><span class="text-warning"><i class="fas fa-redo-alt"></i></span></a> Superan la frecuencia semanal</h5>
 
         <table id="board_superan" class="table table-sm table-hover table-bordered" style="width:100%; font-size: 12px;">
             <thead class="thead-light">  
@@ -51,6 +52,11 @@
         </table>         
     </div>
   </div>
+  <div class="row">
+      <div class="col">
+          <div id="grafico2"></div>
+      </div>
+  </div>
 </div>
 
 
@@ -62,7 +68,7 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $('#board_vencimientos').DataTable({
+        var var_vencim = $('#board_vencimientos').DataTable({
             "processing": true,
             "paging": true,
             "searching": false,
@@ -152,7 +158,7 @@
         });     
 
 
-        $('#board_superan').DataTable({
+        var var_superan=$('#board_superan').DataTable({
             "processing": true,
             "paging": true,
             "searching": false,
@@ -188,7 +194,7 @@
         });
 
 
-       $('#board_cumples').DataTable({
+       var var_cumples = $('#board_cumples').DataTable({
             "processing": true,
             "paging": true,
             "searching": false,
@@ -239,38 +245,111 @@
 
         });
 
-           var chart = new Highcharts.Chart({
-                chart: {
-                    renderTo: 'grafico',
-                    
-                    margin: [0, 0, 0, 0],
-                    spacingTop: 0,
-                    spacingBottom: 0,
-                    spacingLeft: 0,
-                    spacingRight: 0
-                },
-                credits: {
-                    enabled: false
-                },
-                title: {
-                    text: null
-                },
-                plotOptions: {
-                    pie: {
-                        size:'70%',
-                        dataLabels: {
-                            enabled: true
-                        }
+       var chart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'grafico',
+                
+                margin: [0, 0, 0, 0],
+                spacingTop: 0,
+                spacingBottom: 0,
+                spacingLeft: 0,
+                spacingRight: 0
+            },
+            credits: {
+                enabled: false
+            },
+            title: {
+                text: null
+            },
+            plotOptions: {
+                pie: {
+                    size:'70%',
+                    dataLabels: {
+                        enabled: true
                     }
+                }
+            },
+            series: [{
+                type: 'pie',
+                name: 'Medios pago',
+                data: [<?php  echo $caja_mp; ?>
+
+                ]}]    
+        });
+        $("#act_vencimientos").click( function(){
+             var_vencim.ajax.reload();
+           }
+        );
+        $("#act_cumples").click( function(){
+             var_cumples.ajax.reload();
+           }
+        );      
+        $("#act_superan").click( function(){
+             var_superan.ajax.reload();
+           }
+        );
+
+
+
+        var chart2 = new Highcharts.Chart({
+            chart: {
+                renderTo: 'grafico2',
+                type: 'column'
+            },
+            title: {
+                text: 'Historial de caja'
+            },
+
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Ingreso total de caja'
                 },
-                series: [{
-                    type: 'pie',
-                    name: 'Medios pago',
-                    data: [<?php  echo $caja_mp; ?>
-
-                    ]}]    
-            });       
-
+                stackLabels: {
+                    enabled: true,
+                    style: {
+                        fontWeight: 'bold',
+                        color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+                    }
+                }
+            },
+            legend: {
+                align: 'right',
+                x: -30,
+                verticalAlign: 'top',
+                y: 25,
+                floating: true,
+                backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
+                borderColor: '#CCC',
+                borderWidth: 1,
+                shadow: false
+            },
+            tooltip: {
+                headerFormat: '<b>{point.x}</b><br/>',
+                pointFormat: '{series.name}: {point.y}<br/>Total: {point.stackTotal}'
+            },
+            plotOptions: {
+                column: {
+                    stacking: 'normal',
+                    dataLabels: {
+                        enabled: true,
+                        color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
+                    }
+                }
+            },
+            series: [{
+                name: 'John',
+                data: [5, 3, 4, 7, 2]
+            }, {
+                name: 'Jane',
+                data: [2, 2, 3, 2, 1]
+            }, {
+                name: 'Joe',
+                data: [3, 4, 4, 2, 5]
+            }]
+        });
     });
 
 </script>
+
+
