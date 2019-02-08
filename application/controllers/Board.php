@@ -18,7 +18,8 @@ class Board extends CI_Controller{
         $data['_dt'] = 'true';
         $data['title'] = 'Panel principal';
         $data['subtitle'] = date('d-m-Y');
-
+        $data['menu0'] = 'boardmenu';
+        $data['menu1'] = 'board1';
         $caja = $this->Cuenta_model->board_caja_mp2();
         $data1 = '';
         $total = 0;

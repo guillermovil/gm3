@@ -23,6 +23,12 @@ a:focus {
     transition: all 0.3s;
 }
 
+.table .custom-blue th {
+  color: #eee;
+  background-color: #061539;
+  border-color: #32383e;
+}
+
 .navbar {
     padding: 5px 5px;
     background: #222;

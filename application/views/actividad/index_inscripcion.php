@@ -1,13 +1,3 @@
-<!-- 
-ins_id
-ins_vencimiento
-documento
-socio
-actividad
-ult_vto
-ult_asist
--->
-
 <table id="inscripciones_table" class="table table-bordered table-hover" style="width:100%; font-size: smaller;">
     <thead class="thead-dark">  
         <tr>
@@ -29,7 +19,7 @@ ult_asist
         $('#inscripciones_table').DataTable({
             "processing": true,
             "ajax":{
-                "url": "<?php echo base_url('actividad/tabla_inscripciones/').$act_code; ?>",
+                "url": "<?php echo base_url('inscripcion/tabla_inscripciones/').$act_code; ?>",
                 "dataType": "json",
                 "type": "POST",
                 "data":{  '<?php echo $this->security->get_csrf_token_name(); ?>' : '<?php echo $this->security->get_csrf_hash(); ?>' }

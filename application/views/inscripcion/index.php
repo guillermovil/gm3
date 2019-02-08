@@ -20,7 +20,7 @@ if(isset($_alert) && $_alert){
 
 ?>
     <table id="inscripciones_table" class="table table-bordered table-hover" style="width:100%; font-size: smaller;">
-        <thead class="thead-dark">  
+        <thead class="custom-blue">  
             <tr>
                 <th>Id</th>
                 <th>Actividad</th>

@@ -48,9 +48,23 @@ class Inscripcion extends CI_Controller{
         $data['title'] = 'Inscripciones del socio';
         $data['subtitle'] = $this->Inscripcion_model->get_apelnom($soc_id);
         $data['soc_id'] = $soc_id;
+        $data['menu0'] = 'activmenu';
+        $data['menu1'] = 'activlista';        
         $this->load->view('layouts/main-vertical',$data);
     }
 
+    public function index_inscripciones($act_code)
+    {
+        $data['_view'] = 'actividad/index_inscripcion';
+        $data['_dt'] = 'true';
+        $data['title'] = 'Listado de inscripciones de';
+        $act = $this->Actividad_model->get_actividad($act_code);
+        $data['subtitle'] = $act['act_nombre'];
+        $data['act_code'] = $act_code;
+        $data['menu0'] = 'activmenu';
+        $data['menu1'] = 'activlista';        
+        $this->load->view('layouts/main-vertical',$data);
+    }
 
     public function addInscripcion($soc_id) {
         $this->load->helper(array('form', 'url'));
@@ -204,5 +218,34 @@ class Inscripcion extends CI_Controller{
                     );                
         echo json_encode($json_data); 
     }
+
+    public function tabla_inscripciones($act_code){
+
+
+        $inscripciones = $this->Inscripcion_model->inscxactividad($act_code);
+        $data = array();
+        if(!empty($inscripciones))
+        {
+            foreach ($inscripciones as $ins)
+            {
+                $nestedData['ins_id'] = $ins->ins_id;
+                $nestedData['ins_vencimiento'] = $ins->ins_vencimiento;
+                $nestedData['socio'] = $ins->socio;
+                $nestedData['documento'] = $ins->documento;
+                $nestedData['actividad'] = $ins->actividad;
+                $nestedData['ult_vto'] = $ins->ult_vto;
+                $nestedData['ult_asist'] = $ins->ult_asist;
+      
+                $data[] = $nestedData;
+            }
+        }
+          
+        $json_data = array(
+                    "draw" => intval($this->input->post('draw')),  
+                    "data" => $data   
+                    );                
+        echo json_encode($json_data); 
+    }
+
 }
 

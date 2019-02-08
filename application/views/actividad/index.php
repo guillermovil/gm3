@@ -10,7 +10,7 @@ if(isset($_alert) && $_alert){
 
 ?>
     <table id="actividades_table" class="table table-bordered table-hover" style="width:100%; font-size: smaller;">
-        <thead class="thead-dark">  
+        <thead class="custom-blue">  
             <tr>
                 <th>Codigo</th>
                 <th>Nombre</th>
@@ -50,7 +50,7 @@ if(isset($_alert) && $_alert){
                               </button>
                               <div class="dropdown-menu">
                                 <a class="dropdown-item" href="<?php echo site_url('actividad/editActividad/'); ?>`+row.act_code+`"">Editar</a>
-                                <a class="dropdown-item" href="<?php echo site_url('actividad/lsInscriptos'); ?>`+row.act_code+`"">Inscripciones</a>
+                                <a class="dropdown-item" href="<?php echo site_url('inscripcion/index_inscripciones/'); ?>`+row.act_code+`"">Inscripciones</a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="<?php echo site_url('actividad/deleteActividad/'); ?>`+row.act_code+`"">Eliminar <i class="fas fa-trash-alt"></i></a>
 

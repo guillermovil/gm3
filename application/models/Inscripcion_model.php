@@ -117,4 +117,20 @@ class Inscripcion_model extends CI_Model
         }
     }
 
+    function inscxactividad($act_code){   
+        $this->db->select("ins_id, ins_vencimiento, socio, documento, actividad, ult_vto, ult_asist");
+        $this->db->from('vw_inscripciones');
+        $this->db->where(array('act_code'=>$act_code));
+        $this->db->where(("ins_vencimiento >= now() OR ins_vencimiento IS null"));
+        $this->db->order_by('socio','ASC');
+
+        $query = $this->db->get();
+
+        if($query->num_rows()>0){
+            return $query->result(); 
+        }else{
+            return null;
+        }
+    }
+
 }
