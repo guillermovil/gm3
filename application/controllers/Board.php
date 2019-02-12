@@ -34,23 +34,44 @@ class Board extends CI_Controller{
          // print_r(json_encode($json_data));
          // echo '</pre>';         
          // exit;
+        $a=$this->caja_stack(15);
         $data['caja_total'] = $total;
         $data['caja_mp'] = $data1;
         $this->load->view('layouts/main-vertical',$data);
     }
 
+    public function caja_stack($dias){
+        $cs = $this->Cuenta_model->board_caja_stack($dias);
+        // echo '<pre>';
+        // print_r($cs);
+        // echo '</pre>'; 
+        // echo "<h2>Debug</h2>";
+        $i=0;
 
+        foreach ($cs as $f) {
+            if ($i<$dias) {
+                $xseries[] = $f["t"];
+            }
+            if ($i % $dias == 0){
+                if($i>0){
+                    $yseries[]=$fila;
+                    unset($fila);
+                }
+                $fila[] = $f["act_nombre"]; 
+            }
+            $fila[] = $f["valor"];
+            $i = $i + 1;       
+        }
+        // echo '<pre>';
+        // print_r($xseries);
+        // echo '</pre>';
+        // echo '<pre>';
+        // print_r($yseries);
+        // echo '</pre>';                
+        // exit;        
+        return $yseries;      
+    }
 
-	// soc_apellido,
-	// soc_nombre,
-	// mod_tipo,
-	// act_code,
-	// act_nombre,
-	// ins_id,
-	// ins_vencimiento,
-	// hasta,
-	// dias_vencer,
-	// ult_asistencia
     public function tabla_vencimientos(){
         $columns = array( 
 			0 =>'soc_apellido',
