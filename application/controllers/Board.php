@@ -34,7 +34,7 @@ class Board extends CI_Controller{
          // print_r(json_encode($json_data));
          // echo '</pre>';         
          // exit;
-        $a=$this->caja_stack(15);
+        $data['caja_stack']=$this->caja_stack(15);
         $data['caja_total'] = $total;
         $data['caja_mp'] = $data1;
         $this->load->view('layouts/main-vertical',$data);
@@ -62,14 +62,15 @@ class Board extends CI_Controller{
             $fila[] = $f["valor"];
             $i = $i + 1;       
         }
-        // echo '<pre>';
-        // print_r($xseries);
-        // echo '</pre>';
-        // echo '<pre>';
-        // print_r($yseries);
-        // echo '</pre>';                
-        // exit;        
-        return $yseries;      
+
+        $csv = join(", ", $xseries);
+        $csv = $csv . "\n";
+
+        foreach ($yseries as $y) {
+            $csv = $csv . join(", ", $y);            
+            $csv = $csv . "\n";
+        }  
+        return $csv;      
     }
 
     public function tabla_vencimientos(){
