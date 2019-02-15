@@ -1,7 +1,11 @@
-<pre id="divstack.csv" style="display: none">
-<?php echo $caja_stack; ?>
-</pre>
 <div class="container">
+<pre id="data.csv" style="display: none">
+Categories,Apples,Pears,Oranges,Bananas
+John,8,4,6,5
+Jane,3,4,2,3
+Joe,86,76,79,77
+Janet,3,16,13,15
+</pre>
   <div class="row">
     <div class="col">
         
@@ -68,9 +72,21 @@
 <script src="<?php echo site_url('resources/datatables/dataTables.bootstrap4.min.js');?>"> </script>
 
 <script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/data.js"></script>
 
 <script type="text/javascript">
     $(document).ready(function () {
+        var chart2 = new Highcharts.Chart({
+          chart: {
+            renderTo: 'grafico2',
+            type: 'column'
+          },
+
+          data: {
+            csv: document.getElementById('data.csv').innerHTML
+          }
+        });
+
         var var_vencim = $('#board_vencimientos').DataTable({
             "processing": true,
             "paging": true,
@@ -197,7 +213,7 @@
         });
 
 
-       var var_cumples = $('#board_cumples').DataTable({
+        var var_cumples = $('#board_cumples').DataTable({
             "processing": true,
             "paging": true,
             "searching": false,
@@ -292,17 +308,7 @@
            }
         );
 
-        $('#grafico2').highcharts({
-          chart: {
-            type: 'column'
-          },
-
-          data: {
-            csv: document.getElementById('divstack.csv').innerHTML
-          }
-        });
-
-
+        
     });
 
 </script>
