@@ -20,23 +20,7 @@ class Board extends CI_Controller{
         $data['subtitle'] = date('d-m-Y');
         $data['menu0'] = 'boardmenu';
         $data['menu1'] = 'board1';
-        $caja = $this->Cuenta_model->board_caja_mp2();
-        $data1 = '';
-        $total = 0;
-        if(!empty($caja)){
-            foreach ($caja as $vt) {
-                $data1 = $data1 . "['{$vt->descrip}',{$vt->valor}],";
-                $total = $total + $vt->valor;
-            }
-        }
-
-         // echo '<pre>';
-         // print_r(json_encode($json_data));
-         // echo '</pre>';         
-         // exit;
-        $data['caja_stack']=$this->caja_stack(13);
-        $data['caja_total'] = $total;
-        $data['caja_mp'] = $data1;
+        $data['caja_stack']=$this->caja_stack(7);
         $this->load->view('layouts/main-vertical',$data);
     }
 
@@ -183,6 +167,44 @@ class Board extends CI_Controller{
                     );                
         echo json_encode($json_data); 
     }  
+
+
+    public function tabla_caja(){
+        $columns = array( 
+            0 =>'ps_fecha',
+            1 =>'ps_created',
+            2 =>'concepto_caja',
+            3 =>'socio',
+            4 =>'actividad',
+            5 =>'ps_valor'
+        );
+
+        $caja_hoy = $this->Cuenta_model->caja_hoy();
+        $data = array();
+        if(!empty($caja_hoy))
+        {
+            foreach ($caja_hoy as $ch)
+            {
+
+                $nestedData['ps_fecha']  =  $ch->ps_fecha;
+                $nestedData['ps_created']  =  $ch->ps_created;
+                $nestedData['concepto_caja']  =  $ch->concepto_caja;
+                $nestedData['socio']  =  $ch->socio;
+
+                $nestedData['actividad']  =  $ch->actividad;
+                $nestedData['ps_valor']  =  $ch->ps_valor;
+      
+                $data[] = $nestedData;
+            }
+        }
+          
+        $json_data = array(
+                    "draw" => intval($this->input->post('draw')),  
+                    "data" => $data   
+                    );                
+        echo json_encode($json_data); 
+    }
+
 
 }
 

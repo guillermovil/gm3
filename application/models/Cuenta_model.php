@@ -122,36 +122,6 @@ class Cuenta_model extends CI_Model
         }
     }  
 
-   function board_caja_mp()   {
-        $sql = 'select mediospago.mp_descrip as descrip, sum(pagossocios.ps_valor) as valor
-                from
-                    pagossocios
-                    inner join mediospago ON mediospago.mp_code = pagossocios.mp_code
-                where ps_fecha = current_date
-                group by mediospago.mp_descrip';
-        $query = $this->db->query($sql);
-        if($query->num_rows()>0){
-            return $query->result(); 
-        }else{
-            return null;
-        }
-    }  
-   function board_caja_mp2()   {
-        $sql = '
-            select act_nombre descrip, sum(pagossocios.ps_valor) valor
-            from 
-                pagossocios
-                inner join inscripciones ON inscripciones.ins_id = pagossocios.ins_id
-                inner join actividades on actividades.act_code = inscripciones.act_code
-            where ps_fecha = current_date
-            group by act_nombre';
-        $query = $this->db->query($sql);
-        if($query->num_rows()>0){
-            return $query->result(); 
-        }else{
-            return null;
-        }
-    } 
 
    function board_caja_stack($dias)   {
    		$dias = $dias - 1;
@@ -177,4 +147,25 @@ class Cuenta_model extends CI_Model
         }
     }  
 
+    function caja_hoy(){   
+
+        $sql = "select 
+            ps_fecha, ps_created, 'PS' concepto_caja, socios.soc_apellido||', '|| socios.soc_nombre socio, act_nombre actividad,  ps_valor
+            from 
+                pagossocios 
+                inner join inscripciones using(ins_id)
+                inner join actividades using(act_code)
+                inner join socios using(soc_id)
+            where ps_fecha::date = current_date - 1
+            order by ps_fecha desc, ps_created desc";
+
+        $query = $this->db->get('vw_board_vencimientos');
+
+        $query = $this->db->query($sql);
+        if($query->num_rows()>0){
+            return $query->result(); 
+        }else{
+            return null;
+        }
+    }
 }

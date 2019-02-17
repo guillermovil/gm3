@@ -3,6 +3,12 @@
 <?php echo $caja_stack; ?>
 </pre>
   <div class="row">
+      <div class="col">
+          <div id="grafico2"></div>
+      </div>
+  </div>
+  <br><br>
+  <div class="row">
     <div class="col">
         
     	<h5><a href="#" id="act_vencimientos"><span class="text-warning"><i class="fas fa-redo-alt"></i></span></a> Vencidos o próximos a vencer (2 días)</h5>
@@ -19,11 +25,17 @@
 		</table>      
     </div>
     <div class="col">
-      <h5>Caja diaria: <span class="small"><?php echo $caja_total; ?></span></h5>
-
-      <div id="grafico"></div>
-
-
+      <h5><a href="#" id="act_movimientos"><span class="text-warning"><i class="fas fa-redo-alt"></i></span></a> Movimientos de caja:</h5>
+		<table id="board_movimientos" class="table table-sm table-hover table-bordered" style="width:100%; font-size: 12px;">
+		    <thead class="thead-light">  
+		        <tr>
+		            <th>Concepto</th>
+		            <th>Socio</th>
+		            <th>Actividad</th>
+		            <th>Valor</th>
+		        </tr>
+		    </thead>
+		</table> 
     </div>
   </div>
   <div class="row">
@@ -55,11 +67,6 @@
         </table>         
     </div>
   </div>
-  <div class="row">
-      <div class="col">
-          <div id="grafico2"></div>
-      </div>
-  </div>
 </div>
 
 
@@ -77,18 +84,28 @@
 				renderTo: 'grafico2',
 				type: 'column'
 			},
+			tooltip: {
+				formatter: function () {
+					return '<b>'+this.series.name + ': ' + this.y + '</b><br/>' +
+					'Total: ' + this.point.stackTotal;
+				}
+			},			
 			plotOptions: {
-			    column: {
-			        stacking: 'normal',
-			        dataLabels: {
-			            enabled: true,
-			            color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
-			        }
-			    }
+			    column: {stacking: 'normal'}
 			},
-			data: {
-				csv: document.getElementById('data.csv').innerHTML
-			}
+            title: {text: 'Historial de cajas'},
+		    yAxis: {
+		        title: {text: '$ de recaudación'},
+		        stackLabels: {enabled: true}		        
+		    },
+
+		    legend: {
+		        itemStyle: {
+					color: '#555',
+					fontWeight: 'normal'
+		        }
+		    },		    
+			data: {csv: document.getElementById('data.csv').innerHTML}
         });
 
         var var_vencim = $('#board_vencimientos').DataTable({
@@ -181,6 +198,30 @@
         });     
 
 
+        var var_movim=$('#board_movimientos').DataTable({
+            "processing": true,
+            "paging": true,
+            "searching": false,
+            "info": false,
+            "serverSide": false,
+            "lengthChange": false,
+            "pageLength": 7,
+            "pagingType": "simple",
+            "ajax":{
+                "url": "<?php echo base_url('board/tabla_caja'); ?>",
+                "dataType": "json",
+                "type": "POST",
+                "data":{  '<?php echo $this->security->get_csrf_token_name(); ?>' : '<?php echo $this->security->get_csrf_hash(); ?>' }
+            },
+            "columns": [
+                    {	"data": "concepto_caja"},
+                    {	"data": "socio" },
+                    {	"data": "actividad" },
+                    {	"data": "ps_valor" }
+               ]     
+
+        });
+
         var var_superan=$('#board_superan').DataTable({
             "processing": true,
             "paging": true,
@@ -268,37 +309,7 @@
 
         });
 
-       var chart = new Highcharts.Chart({
-            chart: {
-                renderTo: 'grafico',
-                
-                margin: [0, 0, 0, 0],
-                spacingTop: 0,
-                spacingBottom: 0,
-                spacingLeft: 0,
-                spacingRight: 0
-            },
-            credits: {
-                enabled: false
-            },
-            title: {
-                text: null
-            },
-            plotOptions: {
-                pie: {
-                    size:'70%',
-                    dataLabels: {
-                        enabled: true
-                    }
-                }
-            },
-            series: [{
-                type: 'pie',
-                name: 'Medios pago',
-                data: [<?php  echo $caja_mp; ?>
 
-                ]}]    
-        });
         $("#act_vencimientos").click( function(){
              var_vencim.ajax.reload();
            }
@@ -306,7 +317,11 @@
         $("#act_cumples").click( function(){
              var_cumples.ajax.reload();
            }
-        );      
+        ); 
+        $("#act_movimientos").click( function(){
+             var_movim.ajax.reload();
+           }
+        );              
         $("#act_superan").click( function(){
              var_superan.ajax.reload();
            }
