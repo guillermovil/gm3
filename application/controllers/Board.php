@@ -34,7 +34,7 @@ class Board extends CI_Controller{
          // print_r(json_encode($json_data));
          // echo '</pre>';         
          // exit;
-        $data['caja_stack']=$this->caja_stack(15);
+        $data['caja_stack']=$this->caja_stack(13);
         $data['caja_total'] = $total;
         $data['caja_mp'] = $data1;
         $this->load->view('layouts/main-vertical',$data);
@@ -45,29 +45,30 @@ class Board extends CI_Controller{
         // echo '<pre>';
         // print_r($cs);
         // echo '</pre>'; 
-        // echo "<h2>Debug</h2>";
-        $i=0;
 
+        $i=0;
         foreach ($cs as $f) {
-            if ($i<$dias) {
-                $xseries[] = $f["t"];
+            $acts=$f['acts'];  //se podría ejecutar una sola vez afuera
+            if ($i<$acts) {
+                $series[] = $f['act_nombre'];
             }
-            if ($i % $dias == 0){
+            if ($i % $acts == 0){
                 if($i>0){
-                    $yseries[]=$fila;
+                    $y[]=$fila;
                     unset($fila);
                 }
-                $fila[] = $f["act_nombre"]; 
+                $fila[] = $f["t"]; 
             }
             $fila[] = $f["valor"];
-            $i = $i + 1;       
+            $i++;       
         }
+        $y[]=$fila;
 
-        $csv = join(", ", $xseries);
-        $csv = $csv . "\n";
+        $csv = join(",", $series);
+        $csv = 'Categories,'.$csv . "\n";
 
-        foreach ($yseries as $y) {
-            $csv = $csv . join(", ", $y);            
+        foreach ($y as $y) {
+            $csv = $csv . join(",", $y);            
             $csv = $csv . "\n";
         }  
         return $csv;      

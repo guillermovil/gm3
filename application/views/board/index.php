@@ -1,10 +1,6 @@
 <div class="container">
 <pre id="data.csv" style="display: none">
-Categories,Apples,Pears,Oranges,Bananas
-John,8,4,6,5
-Jane,3,4,2,3
-Joe,86,76,79,77
-Janet,3,16,13,15
+<?php echo $caja_stack; ?>
 </pre>
   <div class="row">
     <div class="col">
@@ -77,14 +73,22 @@ Janet,3,16,13,15
 <script type="text/javascript">
     $(document).ready(function () {
         var chart2 = new Highcharts.Chart({
-          chart: {
-            renderTo: 'grafico2',
-            type: 'column'
-          },
-
-          data: {
-            csv: document.getElementById('data.csv').innerHTML
-          }
+			chart: {
+				renderTo: 'grafico2',
+				type: 'column'
+			},
+			plotOptions: {
+			    column: {
+			        stacking: 'normal',
+			        dataLabels: {
+			            enabled: true,
+			            color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
+			        }
+			    }
+			},
+			data: {
+				csv: document.getElementById('data.csv').innerHTML
+			}
         });
 
         var var_vencim = $('#board_vencimientos').DataTable({
