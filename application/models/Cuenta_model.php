@@ -156,7 +156,7 @@ class Cuenta_model extends CI_Model
                 inner join inscripciones using(ins_id)
                 inner join actividades using(act_code)
                 inner join socios using(soc_id)
-            where ps_fecha::date = current_date - 1
+            where ps_fecha::date = current_date
             order by ps_fecha desc, ps_created desc";
 
         $query = $this->db->get('vw_board_vencimientos');

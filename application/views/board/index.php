@@ -105,7 +105,14 @@
 					fontWeight: 'normal'
 		        }
 		    },		    
-			data: {csv: document.getElementById('data.csv').innerHTML}
+			//data: {csv: document.getElementById('data.csv').innerHTML}
+            data: {
+                csvURL: "<?php echo site_url('board/csv/7');?>",
+                enablePolling: true,
+                dataRefreshRate: 60
+            },
+
+
         });
 
         var var_vencim = $('#board_vencimientos').DataTable({
@@ -214,7 +221,10 @@
                 "data":{  '<?php echo $this->security->get_csrf_token_name(); ?>' : '<?php echo $this->security->get_csrf_hash(); ?>' }
             },
             "columns": [
-                    {	"data": "concepto_caja"},
+                    {
+                    	"data": "concepto_caja",
+                        "width": "5%" 
+                    },
                     {	"data": "socio" },
                     {	"data": "actividad" },
                     {	"data": "ps_valor" }

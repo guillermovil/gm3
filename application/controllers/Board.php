@@ -20,16 +20,11 @@ class Board extends CI_Controller{
         $data['subtitle'] = date('d-m-Y');
         $data['menu0'] = 'boardmenu';
         $data['menu1'] = 'board1';
-        $data['caja_stack']=$this->caja_stack(7);
         $this->load->view('layouts/main-vertical',$data);
     }
 
     public function caja_stack($dias){
         $cs = $this->Cuenta_model->board_caja_stack($dias);
-        // echo '<pre>';
-        // print_r($cs);
-        // echo '</pre>'; 
-
         $i=0;
         foreach ($cs as $f) {
             $acts=$f['acts'];  //se podría ejecutar una sola vez afuera
@@ -56,6 +51,10 @@ class Board extends CI_Controller{
             $csv = $csv . "\n";
         }  
         return $csv;      
+    }
+
+    public function csv($dias){
+        echo $this->caja_stack($dias);
     }
 
     public function tabla_vencimientos(){
@@ -204,7 +203,5 @@ class Board extends CI_Controller{
                     );                
         echo json_encode($json_data); 
     }
-
-
 }
 
