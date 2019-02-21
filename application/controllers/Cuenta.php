@@ -4,8 +4,14 @@ class Cuenta extends CI_Controller{
     function __construct()
     {
         parent::__construct();
-        $this->load->model('Cuenta_model');
-        $this->load->model('Inscripcion_model');
+        if($this->session->userdata('logged_in') !== TRUE){
+            $this->session->set_userdata('url', current_url());
+            redirect('login');
+        } else {
+            $this->load->model('Cuenta_model');
+            $this->load->model('Inscripcion_model');
+        }
+
     } 
 
   	public function date_valid($date){

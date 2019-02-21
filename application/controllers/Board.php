@@ -5,14 +5,13 @@ class Board extends CI_Controller{
     {
         parent::__construct();
         if($this->session->userdata('logged_in') !== TRUE){
-            $this->session->set_userdata('url', 'board');
+            $this->session->set_userdata('url', current_url());
             redirect('login');
-        }        
-        $this->load->model('Cuenta_model');
-        $this->load->model('Socio_model');
-
+        } else {
+            $this->load->model('Cuenta_model');
+            $this->load->model('Socio_model');
+        }
     } 
-
 
 
     public function index()

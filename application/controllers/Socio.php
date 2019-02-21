@@ -3,9 +3,14 @@ class Socio extends CI_Controller{
     function __construct()
     {
         parent::__construct();
-        $this->load->model('Socio_model');
-        $this->load->model('Inscripcion_model');        
-        $this->load->library('session');
+        if($this->session->userdata('logged_in') !== TRUE){
+            $this->session->set_userdata('url', current_url());
+            redirect('login');
+        } else {
+            $this->load->model('Socio_model');
+            $this->load->model('Inscripcion_model'); 
+        }
+
     } 
 
     public function date_valid($date){

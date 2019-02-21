@@ -127,7 +127,7 @@
                     <div class="collapse navbar-collapse" style="font-size: smaller;" id="navbarSupportedContent">
                         <ul class="nav navbar-nav ml-auto">
                             <li class="nav-item">
-                                <a class="nav-link" href="#">Page</a>
+                                <a class="nav-link" href="<?php echo site_url('login/logout');?>"><i class="fas fa-sign-out-alt"></i> Salir</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="#">Page</a>

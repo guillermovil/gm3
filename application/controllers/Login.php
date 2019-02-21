@@ -8,10 +8,8 @@ class Login extends CI_Controller{
 	function index(){
 		$data['_view'] = 'login/login_view';
 		$data['title'] = 'Acceso al sistema';
-		$data['subtitle'] = 'Ingrese sus credenciales';
-		$data['menu0'] = 'activmenu';
-		$data['menu1'] = 'activlista';        
-		$this->load->view('layouts/main-vertical',$data);
+		$data['subtitle'] = 'Ingrese sus credenciales';    
+		$this->load->view('layouts/main-vertical-anonimo',$data);
   	}
  
   function auth(){
@@ -33,7 +31,7 @@ class Login extends CI_Controller{
         if ($this->session->has_userdata('url')){
         	redirect($this->session->url);
         }else{
-        	redirect('socio');
+        	redirect('board');
         }
         // access login for admin
         // if($level === '1'){
@@ -51,11 +49,9 @@ class Login extends CI_Controller{
 		$data['_view'] = 'login/login_view';
 		$data['title'] = 'Acceso al sistema';
 		$data['subtitle'] = 'Ingrese sus credenciales';
-		$data['menu0'] = 'activmenu';
-		$data['menu1'] = 'activlista';    
         $data['_alert'] = 'Usuario o contraseña incorrecto';
         $data['_alert_tipo'] = 'alert-danger';		    
-		$this->load->view('layouts/main-vertical',$data);
+		$this->load->view('layouts/main-vertical-anonimo',$data);
     }
   }
  
@@ -64,11 +60,9 @@ class Login extends CI_Controller{
 		$data['_view'] = 'login/login_view';
 		$data['title'] = 'Acceso al sistema';
 		$data['subtitle'] = 'Ingrese sus credenciales';
-		$data['menu0'] = 'activmenu';
-		$data['menu1'] = 'activlista';    
         $data['_alert'] = 'Se desconectó del sistema';
         $data['_alert_tipo'] = 'alert-danger';		    
-		$this->load->view('layouts/main-vertical',$data);
+		$this->load->view('layouts/main-vertical-anonimo',$data);
   	}
  
 }

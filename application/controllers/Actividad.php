@@ -3,7 +3,13 @@ class Actividad extends CI_Controller{
     function __construct()
     {
         parent::__construct();
-        $this->load->model('Actividad_model');
+        if($this->session->userdata('logged_in') !== TRUE){
+            $this->session->set_userdata('url', current_url());
+            redirect('login');
+        } else {
+            $this->load->model('Actividad_model');    
+        }
+        
     } 
 
     private function set_rules()

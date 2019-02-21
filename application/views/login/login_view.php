@@ -7,26 +7,29 @@
 	  echo "</button>";
 	  echo  "</div>";
 	};
+?>
+<div class="row justify-content-center align-items-center">
+<?php 
 	$attributes = array('role' => 'form', 'id' => 'myform');
  	echo form_open(site_url().'login/auth',$attributes); 
 ?>
-		<div class="form-row">
-			<label for="username">Username</label>
-			<input type="email" name="email" id="email" class="form-control" placeholder="Email" required autofocus>
-		</div>
-		<div class="form-row">
-			<label for="password" class="sr-only">Password</label>
-			<input type="password" name="password" class="form-control" placeholder="Password" required>
-		</div>
-		<div class="checkbox">
-			<label>
-			<input type="checkbox" value="remember-me"> Recuerdame
-			</label>
-		</div>
-		<br>
-		<button class="btn btn-lg btn-primary btn-block" type="submit">Ingresar</button>
-	</form>
-
+			<div class="form-row">
+				<label for="username">Usuario</label>
+				<input type="email" name="email" id="email" class="form-control" placeholder="Email" required autofocus>
+			</div>
+			<div class="form-row">
+				<label for="password">Contraseña</label>
+				<input type="password" name="password" id="password" class="form-control" placeholder="Contraseña" required>
+			</div>
+			<div class="checkbox">
+				<label>
+				<input type="checkbox" value="remember-me"> Recuerdame
+				</label>
+			</div>
+			<br>
+			<button class="btn btn-sm btn-primary" type="submit">Ingresar</button>
+		</form>
+</div>
 <script type="text/javascript">
     $(document).ready(function () {
         $('#aviso').delay(4000).slideUp(200, function() {
