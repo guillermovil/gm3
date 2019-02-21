@@ -4,6 +4,10 @@ class Board extends CI_Controller{
     function __construct()
     {
         parent::__construct();
+        if($this->session->userdata('logged_in') !== TRUE){
+            $this->session->set_userdata('url', 'board');
+            redirect('login');
+        }        
         $this->load->model('Cuenta_model');
         $this->load->model('Socio_model');
 

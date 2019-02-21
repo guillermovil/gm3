@@ -5,9 +5,14 @@ class Login extends CI_Controller{
     $this->load->model('login_model');
   }
  
-  function index(){
-    $this->load->view('login_view');
-  }
+	function index(){
+		$data['_view'] = 'login/login_view';
+		$data['title'] = 'Acceso al sistema';
+		$data['subtitle'] = 'Ingrese sus credenciales';
+		$data['menu0'] = 'activmenu';
+		$data['menu1'] = 'activlista';        
+		$this->load->view('layouts/main-vertical',$data);
+  	}
  
   function auth(){
     $email    = $this->input->post('email',TRUE);
@@ -25,27 +30,45 @@ class Login extends CI_Controller{
             'logged_in' => TRUE
         );
         $this->session->set_userdata($sesdata);
-        // access login for admin
-        if($level === '1'){
-            redirect('page');
- 
-        // access login for staff
-        }elseif($level === '2'){
-            redirect('page/staff');
- 
-        // access login for author
+        if ($this->session->has_userdata('url')){
+        	redirect($this->session->url);
         }else{
-            redirect('page/author');
+        	redirect('socio');
         }
+        // access login for admin
+        // if($level === '1'){
+        //     redirect('board');
+ 
+        // // access login for staff
+        // }elseif($level === '2'){
+        //     redirect('socio');
+ 
+        // // access login for author
+        // }else{
+        //     redirect('socio');
+        // }
     }else{
-        echo $this->session->set_flashdata('msg','Usuario o contraseña incorrecto');
-        redirect('login');
+		$data['_view'] = 'login/login_view';
+		$data['title'] = 'Acceso al sistema';
+		$data['subtitle'] = 'Ingrese sus credenciales';
+		$data['menu0'] = 'activmenu';
+		$data['menu1'] = 'activlista';    
+        $data['_alert'] = 'Usuario o contraseña incorrecto';
+        $data['_alert_tipo'] = 'alert-danger';		    
+		$this->load->view('layouts/main-vertical',$data);
     }
   }
  
-  function logout(){
-      $this->session->sess_destroy();
-      redirect('login');
-  }
+	function logout(){
+  		$this->session->sess_destroy();
+		$data['_view'] = 'login/login_view';
+		$data['title'] = 'Acceso al sistema';
+		$data['subtitle'] = 'Ingrese sus credenciales';
+		$data['menu0'] = 'activmenu';
+		$data['menu1'] = 'activlista';    
+        $data['_alert'] = 'Se desconectó del sistema';
+        $data['_alert_tipo'] = 'alert-danger';		    
+		$this->load->view('layouts/main-vertical',$data);
+  	}
  
 }

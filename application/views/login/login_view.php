@@ -1,23 +1,36 @@
 <?php 
-  echo validation_errors();
-  if(isset($_errorfile) ){
-    echo '<div class="alert alert-warning" role="alert">'.$_errorfile['error'].'</div>';
-  }
-
+	if(isset($_alert) && $_alert){
+	  echo "<div id='aviso' class='alert $_alert_tipo' role='alert'>";
+	  echo $_alert;
+	  echo "<button type='button' class='close' data-dismiss='alert' aria-label='Close'>";
+	  echo "<span aria-hidden='true'>&times;</span>";
+	  echo "</button>";
+	  echo  "</div>";
+	};
+	$attributes = array('role' => 'form', 'id' => 'myform');
+ 	echo form_open(site_url().'login/auth',$attributes); 
 ?>
-<div class="col-md-4 col-md-offset-4">
- <form class="form-signin" action="<?php echo site_url('login/auth');?>" method="post">
-   <h2 class="form-signin-heading">Please sign in</h2>
-   <?php echo $this->session->flashdata('msg');?>
-   <label for="username" class="sr-only">Username</label>
-   <input type="email" name="email" class="form-control" placeholder="Email" required autofocus>
-   <label for="password" class="sr-only">Password</label>
-   <input type="password" name="password" class="form-control" placeholder="Password" required>
-   <div class="checkbox">
-     <label>
-       <input type="checkbox" value="remember-me"> Remember me
-     </label>
-   </div>
-   <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
- </form>
-</div>
+		<div class="form-row">
+			<label for="username">Username</label>
+			<input type="email" name="email" id="email" class="form-control" placeholder="Email" required autofocus>
+		</div>
+		<div class="form-row">
+			<label for="password" class="sr-only">Password</label>
+			<input type="password" name="password" class="form-control" placeholder="Password" required>
+		</div>
+		<div class="checkbox">
+			<label>
+			<input type="checkbox" value="remember-me"> Recuerdame
+			</label>
+		</div>
+		<br>
+		<button class="btn btn-lg btn-primary btn-block" type="submit">Ingresar</button>
+	</form>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#aviso').delay(4000).slideUp(200, function() {
+            $(this).alert('close');
+        });
+    });
+</script>
