@@ -88,6 +88,27 @@
                     </ul>
                 </li>                
 
+
+                <li>
+                    <a href="#ventmenu" data-toggle="collapse" aria-expanded="false" aria-control="ventmenu" class="dropdown-toggle" data-parent="#grupo">Ventas</a>
+                    <ul class="collapse list-unstyled" id="ventmenu">
+                        <li id="categlista">
+                            <a href="<?php echo site_url('categoria');?>"><i class="fas fa-th"></i> Lista de categorías</a>
+                        </li>
+                        <li id="categnuevo">
+                            <a href="<?php echo site_url('categoria/addCategoria');?>"><i class="fas fa-plus"></i> Nueva categoría</a>
+                        </li>
+                        <li id="prodlista">
+                            <a href="<?php echo site_url('producto');?>"><i class="fas fa-th"></i> Lista de productos</a>
+                        </li>    
+                        <li id="prodnuevo">
+                            <a href="<?php echo site_url('producto/addProducto');?>"><i class="fas fa-plus"></i> Nuevo producto</a>
+                        </li>                    
+                    </ul>
+                </li>                
+
+
+
             </ul>
             </div>
             <p></p>
