@@ -66,10 +66,12 @@ class Producto_model extends CI_Model
     {   
        $query = $this
                 ->db
-                ->select('soc_id, soc_tipodoc, soc_nrodoc, soc_apellido, soc_nombre, soc_email')
+                ->select('prod_code, prod_descrip, prod_precio, prod_stock, prod_ctrl_stock, cat_code, cat_descrip')
+                ->from('productos');
+                ->join('categorias', 'productos.cat_code = categorias.cat_code');
                 ->limit($limit,$start)
                 ->order_by($col,$dir)
-                ->get('socios');
+                ->get();
         
         if($query->num_rows()>0)
         {
@@ -86,14 +88,16 @@ class Producto_model extends CI_Model
     {
         $query = $this
                 ->db
-                ->select('soc_id, soc_tipodoc, soc_nrodoc, soc_apellido, soc_nombre, soc_email')
-                ->like('soc_apellido',$search)
-                ->or_like('soc_nombre',$search)
-                ->or_like('soc_email',$search)
-                ->or_like('soc_nrodoc',$search)
+                ->select('prod_code, prod_descrip, prod_precio, prod_stock, prod_ctrl_stock, cat_code, cat_descrip')
+                ->from('productos');
+                ->join('categorias', 'productos.cat_code = categorias.cat_code');                
+                ->like('prod_code',$search)
+                ->or_like('prod_descrip',$search)
+                ->or_like('cat_code',$search)
+                ->or_like('cat_descrip',$search)
                 ->limit($limit,$start)
                 ->order_by($col,$dir)
-                ->get('socios');
+                ->get();
         
        
         if($query->num_rows()>0)
@@ -110,11 +114,14 @@ class Producto_model extends CI_Model
     {
         $query = $this
                 ->db
-                ->select('soc_id') //para contar filas no hace falta traer todas las columnas
-                ->like('soc_apellido',$search)
-                ->or_like('soc_nombre',$search)
-                ->or_like('soc_email',$search)
-                ->get('socios');
+                ->select('prod_code')
+                ->from('productos');
+                ->join('categorias', 'productos.cat_code = categorias.cat_code');                
+                ->like('prod_code',$search)
+                ->or_like('prod_descrip',$search)
+                ->or_like('cat_code',$search)
+                ->or_like('cat_descrip',$search)
+                ->get();
     
         return $query->num_rows();
     } 
