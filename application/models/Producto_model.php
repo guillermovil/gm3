@@ -45,11 +45,14 @@ class Producto_model extends CI_Model
         }
     }
 
-    function delete($prod_code)
-    {
-        return $this->db->delete('socios',array('prod_code'=>$prod_code));
-    }
 
+    function delete($prod_code){
+        if (!$this->db->delete('productos',array('prod_code'=>$prod_code))) {
+            return false;
+        }else{
+            return true;
+        }
+    }
 
     function all_count()
     {   

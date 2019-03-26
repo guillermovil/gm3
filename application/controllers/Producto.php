@@ -113,16 +113,6 @@ class Producto extends CI_Controller{
     }
 
 
-/* 
----------------------------------------------------------------
----------------------------------------------------------------
-Hasta aquí llegué a adaptar
-25-03-2019
----------------------------------------------------------------
----------------------------------------------------------------
-*/ 
-
-
     public function deleteProducto($producto_id) {
         $delete =  $this->Producto_model->delete($producto_id);
 
@@ -142,6 +132,7 @@ Hasta aquí llegué a adaptar
 
     }
 
+
     public function editProducto($producto_id) {
         $this->load->helper(array('form', 'url'));
         $data['_view'] = 'producto/edit-producto';
@@ -151,7 +142,18 @@ Hasta aquí llegué a adaptar
 
         $data['producto'] =  $this->Producto_model->get_producto($producto_id);
         $data['menu0'] = 'ventmenu';
-        $data['menu1'] = 'categlista'; 
+        $data['menu1'] = 'prodlista'; 
+
+        $categorias = $this->Producto_model->get_categlista_small();   
+        $opc = array();
+        $opc['0']='Seleccione categoria';
+        foreach ($categorias as $cat) {
+            $opc[($cat['cat_code'])] = $mod['cat_descrip'];
+        } 
+        $data['categorias'] = $opc;
+
+
+
         $this->load->view('layouts/main-vertical',$data);
     }
 
@@ -166,11 +168,25 @@ Hasta aquí llegué a adaptar
             $data['subtitle'] = 'editar datos de la actividad';
             $data['producto'] =  $this->Producto_model->get_producto($this->input->post('prod_code'));
             $data['menu0'] = 'ventmenu';
-            $data['menu1'] = 'categlista';            
+            $data['menu1'] = 'prodlista';   
+
+            $categorias = $this->Producto_model->get_categlista_small();   
+            $opc = array();
+            $opc['0']='Seleccione categoria';
+            foreach ($categorias as $cat) {
+                $opc[($cat['cat_code'])] = $mod['cat_descrip'];
+            } 
+            $data['categorias'] = $opc;
+
             $this->load->view('layouts/main-vertical',$data);
         }else{
             $data['prod_code'] = $this->sinonull($this->input->post('prod_code'));
             $data['prod_descrip'] = $this->sinonull($this->input->post('prod_descrip'));
+            $data['prod_precio'] = $this->sinonull($this->input->post('prod_precio'));    
+            $data['prod_stock'] = $this->sinonull($this->input->post('prod_stock'));    
+            $data['prod_ctrl_stock'] = $this->sinonull($this->input->post('prod_ctrl_stock'));    
+            $data['cat_code'] = $this->sinonull($this->input->post('cat_code'));  
+
             $update = $this->Producto_model->update($this->input->post('cat_code_original'),$data);
             $data1['_view'] = 'producto/index';
             $data1['_dt'] = 'true';
@@ -184,7 +200,7 @@ Hasta aquí llegué a adaptar
                 $data1['_alert_tipo'] = 'alert-warning';                
             }
             $data1['menu0'] = 'ventmenu';
-            $data1['menu1'] = 'categlista';            
+            $data1['menu1'] = 'prodlista';            
             $this->load->view('layouts/main-vertical',$data1);
         }
     }
@@ -217,6 +233,67 @@ Hasta aquí llegué a adaptar
                 
             echo json_encode($json_data); 
     }
+
+
+    public function tabla()
+    {
+
+        $columns = array( 
+                            0 => 'prod_code',
+                            1 => 'prod_descrip',
+                            2 => 'prod_precio',
+                            3 => 'prod_stock',
+                            4 => 'prod_ctrl_stock',
+                            5 => 'cat_code',
+                            6 => 'cat_descrip'
+                        );
+
+        $limit = $this->input->post('length');
+        $start = $this->input->post('start');
+        $order = $columns[$this->input->post('order')[0]['column']];
+        $dir = $this->input->post('order')[0]['dir'];
+  
+        $totalData = $this->Producto_model->all_count();
+            
+        $totalFiltered = $totalData; 
+            
+        if(empty($this->input->post('search')['value']))
+        {            
+            $productos = $this->Producto_model->all($limit,$start,$order,$dir);
+        }
+        else {
+            $search = $this->input->post('search')['value']; 
+
+            $productos =  $this->Producto_model->search($limit,$start,$search,$order,$dir);
+
+            $totalFiltered = $this->Producto_model->search_count($search);
+        }
+
+        $data = array();
+        if(!empty($productos))
+        {
+            foreach ($productos as $prod)
+            {
+                $nestedData['prod_code'] = $prod->prod_code  ;
+                $nestedData['prod_descrip'] = $prod->prod_descrip  ;
+                $nestedData['prod_precio'] = $prod->prod_precio  ;
+                $nestedData['prod_stock'] = $prod->prod_stock  ;
+                $nestedData['prod_ctrl_stock'] = $prod->prod_ctrl_stock  ;
+                $nestedData['cat_code'] = $prod->cat_code  ;
+                $nestedData['cat_descrip'] = $prod->cat_descrip  ;
+                $data[] = $nestedData;
+            }
+        }
+          
+        $json_data = array(
+                    "draw"            => intval($this->input->post('draw')),  
+                    "recordsTotal"    => intval($totalData),  
+                    "recordsFiltered" => intval($totalFiltered), 
+                    "data"            => $data   
+                    );
+            
+        echo json_encode($json_data); 
+    }    
 
 }
 
