@@ -10,13 +10,14 @@ class Producto_model extends CI_Model
     function get_producto($prod_code)
     {
         $this->db->select('
-            prod_code, prod_code,
+            prod_code, 
             prod_descrip, prod_precio,
             prod_stock, prod_ctrl_stock,
-            cat_code, cat_descrip');
+            productos.cat_code, cat_descrip');
         $this->db->from('productos');
         $this->db->join('categorias', 'productos.cat_code = categorias.cat_code');
-        return $this->db->get_where(array('prod_code'=>$prod_code))->row_array();
+        $this->db->where('prod_code',$prod_code);
+        return $this->db->get()->row_array();
     }
         
 
@@ -69,9 +70,9 @@ class Producto_model extends CI_Model
     {   
        $query = $this
                 ->db
-                ->select('prod_code, prod_descrip, prod_precio, prod_stock, prod_ctrl_stock, cat_code, cat_descrip')
-                ->from('productos');
-                ->join('categorias', 'productos.cat_code = categorias.cat_code');
+                ->select('prod_code, prod_descrip, prod_precio, prod_stock, prod_ctrl_stock, productos.cat_code, cat_descrip')
+                ->from('productos')
+                ->join('categorias', 'productos.cat_code = categorias.cat_code')
                 ->limit($limit,$start)
                 ->order_by($col,$dir)
                 ->get();
@@ -91,9 +92,9 @@ class Producto_model extends CI_Model
     {
         $query = $this
                 ->db
-                ->select('prod_code, prod_descrip, prod_precio, prod_stock, prod_ctrl_stock, cat_code, cat_descrip')
-                ->from('productos');
-                ->join('categorias', 'productos.cat_code = categorias.cat_code');                
+                ->select('prod_code, prod_descrip, prod_precio, prod_stock, prod_ctrl_stock, productos.cat_code, cat_descrip')
+                ->from('productos')
+                ->join('categorias', 'productos.cat_code = categorias.cat_code')
                 ->like('prod_code',$search)
                 ->or_like('prod_descrip',$search)
                 ->or_like('cat_code',$search)
@@ -118,8 +119,8 @@ class Producto_model extends CI_Model
         $query = $this
                 ->db
                 ->select('prod_code')
-                ->from('productos');
-                ->join('categorias', 'productos.cat_code = categorias.cat_code');                
+                ->from('productos')
+                ->join('categorias', 'productos.cat_code = categorias.cat_code')
                 ->like('prod_code',$search)
                 ->or_like('prod_descrip',$search)
                 ->or_like('cat_code',$search)
