@@ -9,6 +9,7 @@ if(isset($_alert) && $_alert){
 };
 
 ?>
+    <a href="<?php echo base_url('producto/addProducto');?>" class="btn btn-success" role="button"><i class="fas fa-plus"></i> Nuevo</a><br><br>
     <table id="productos_table" class="table table-bordered table-hover" style="width:100%; font-size: smaller;">
         <thead class="custom-blue">
             <tr>

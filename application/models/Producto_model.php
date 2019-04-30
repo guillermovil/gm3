@@ -31,8 +31,12 @@ class Producto_model extends CI_Model
         
 
     function insert($params){
-        $this->db->insert('productos',$params);
-        return true;
+        if ($this->db->insert('productos',$params)){
+            return true;
+        }else{
+            return false;
+        }
+        
     }
     
 
@@ -97,7 +101,7 @@ class Producto_model extends CI_Model
                 ->join('categorias', 'productos.cat_code = categorias.cat_code')
                 ->like('prod_code',$search)
                 ->or_like('prod_descrip',$search)
-                ->or_like('cat_code',$search)
+                ->or_like('productos.cat_code',$search)
                 ->or_like('cat_descrip',$search)
                 ->limit($limit,$start)
                 ->order_by($col,$dir)
@@ -123,7 +127,7 @@ class Producto_model extends CI_Model
                 ->join('categorias', 'productos.cat_code = categorias.cat_code')
                 ->like('prod_code',$search)
                 ->or_like('prod_descrip',$search)
-                ->or_like('cat_code',$search)
+                ->or_like('productos.cat_code',$search)
                 ->or_like('cat_descrip',$search)
                 ->get();
     

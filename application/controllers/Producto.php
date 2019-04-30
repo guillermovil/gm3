@@ -76,7 +76,7 @@ class Producto extends CI_Controller{
         $data['title'] = 'Productos';
         $data['subtitle'] = 'nuevo producto';
         $data['menu0'] = 'ventmenu';
-        $data['menu1'] = 'prodnuevo';    
+        $data['menu1'] = 'prodlista';    
 
         $categorias = $this->Producto_model->get_categlista_small();   
         $opc = array();
@@ -113,9 +113,9 @@ class Producto extends CI_Controller{
         }else{
 
 
-            echo '<pre>';
-            print_r($_POST);
-            echo '</pre>';  
+            // echo '<pre>';
+            // print_r($_POST);
+            // echo '</pre>';  
 
             $data['prod_code'] = $this->sinonull($this->input->post('prod_code'));
             $data['prod_descrip'] = $this->sinonull($this->input->post('prod_descrip'));    
@@ -124,14 +124,21 @@ class Producto extends CI_Controller{
             $data['prod_ctrl_stock'] = $this->ischeck('prod_ctrl_stock','Si');    
             $data['cat_code'] = $this->sinonull($this->input->post('cat_code'));    
             
-            $this->Producto_model->insert($data);
+            $insert = $this->Producto_model->insert($data);
 
             $data1['_view'] = 'producto/index';
             $data1['_dt'] = 'true';
             $data1['title'] = 'Productos';
             $data1['subtitle'] = 'Listado general';
-            $data1['_alert'] = 'Registro guardado!';
-            $data1['_alert_tipo'] = 'alert-success';
+
+
+            if ($insert) {
+                $data1['_alert'] = 'Registro guardado!';
+                $data1['_alert_tipo'] = 'alert-success';                
+            }else{
+                $data1['_alert'] = 'El registro no se pudo agregar!';
+                $data1['_alert_tipo'] = 'alert-warning';                
+            }
             $data1['menu0'] = 'ventmenu';
             $data1['menu1'] = 'prodlista';             
             $this->load->view('layouts/main-vertical',$data1);
@@ -154,7 +161,8 @@ class Producto extends CI_Controller{
             $data1['_alert'] = 'El registro no se pudo eliminar!';
             $data1['_alert_tipo'] = 'alert-warning';            
         }
-
+        $data1['menu0'] = 'ventmenu';
+        $data1['menu1'] = 'prodlista';  
         $this->load->view('layouts/main-vertical',$data1);
 
     }
@@ -214,7 +222,7 @@ class Producto extends CI_Controller{
             $data['prod_ctrl_stock'] = $this->sinonull($this->input->post('prod_ctrl_stock'));    
             $data['cat_code'] = $this->sinonull($this->input->post('cat_code'));  
 
-            $update = $this->Producto_model->update($this->input->post('cat_code_original'),$data);
+            $update = $this->Producto_model->update($this->input->post('prod_code_original'),$data);
             $data1['_view'] = 'producto/index';
             $data1['_dt'] = 'true';
             $data1['title'] = 'Productos';

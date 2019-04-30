@@ -1,7 +1,7 @@
 <?php 
   echo validation_errors();
   $attributes = array('role' => 'form', 'id' => 'myform');
-  echo form_open_multipart(site_url().'producto/addProductoPost',$attributes); 
+  echo form_open_multipart(site_url().'producto/editProductoPost',$attributes); 
 ?>
   <input type="hidden" class="form-control" id="prod_code_original" name="prod_code_original" value="<?php echo set_value('prod_code_original',@$producto['prod_code']); ?>">
   <div class="form-row"> 

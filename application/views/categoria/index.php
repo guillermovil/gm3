@@ -9,6 +9,7 @@ if(isset($_alert) && $_alert){
 };
 
 ?>
+    <a href="<?php echo base_url('categoria/addCategoria');?>" class="btn btn-success" role="button"><i class="fas fa-plus"></i> Nueva categoría</a><br><br>
     <table id="categorias_table" class="table table-bordered table-hover" style="width:100%; font-size: smaller;">
         <thead class="custom-blue">  
             <tr>

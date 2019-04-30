@@ -95,15 +95,12 @@
                         <li id="categlista">
                             <a href="<?php echo site_url('categoria');?>"><i class="fas fa-th"></i> Lista de categorías</a>
                         </li>
-                        <li id="categnuevo">
-                            <a href="<?php echo site_url('categoria/addCategoria');?>"><i class="fas fa-plus"></i> Nueva categoría</a>
-                        </li>
                         <li id="prodlista">
                             <a href="<?php echo site_url('producto');?>"><i class="fas fa-th"></i> Lista de productos</a>
-                        </li>    
-                        <li id="prodnuevo">
-                            <a href="<?php echo site_url('producto/addProducto');?>"><i class="fas fa-plus"></i> Nuevo producto</a>
-                        </li>                    
+                        </li>  
+                        <li id="ventlista">
+                            <a href="<?php echo site_url('venta/addVenta');?>"><i class="fas fa-th"></i> Nueva venta</a>
+                        </li>                                             
                     </ul>
                 </li>                
 
