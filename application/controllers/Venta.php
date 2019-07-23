@@ -8,7 +8,7 @@ class Venta extends CI_Controller{
             redirect('login');
         } else {
             //$this->load->model('Venta_model');
-            $this->load->model('Producto_model');    
+            $this->load->model('Venta_model');    
         }
         
     }
@@ -23,6 +23,9 @@ class Venta extends CI_Controller{
         $data['subtitle'] = 'nueva venta';
         $data['menu0'] = 'ventmenu';
         $data['menu1'] = 'ventlista';    
+        $data['vta_nro_aprox'] = $this->Venta_model->get_last_venta();
+
+
 
         $this->load->view('layouts/main-vertical',$data);
     }

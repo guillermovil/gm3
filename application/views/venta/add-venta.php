@@ -3,12 +3,13 @@
   echo validation_errors();
   $attributes = array('role' => 'form', 'id' => 'myform');
   echo form_open_multipart(site_url().'venta/addVentaPost',$attributes); 
+  echo $vta_nro_aprox;
 ?>
 
 	<div class="form-row"> 
 		<div class="col-1">
-			<label for="vta_nro">Venta nro:</label>
-			<input type="text" class="form-control" id="vta_nro" name="vta_nro" value="<?php echo set_value('vta_nro'); ?>">
+			<label for="vta_nro">Venta id:</label>
+			<input type="text" class="form-control" id="vta_nro" name="vta_nro" readonly style="color: Grey; opacity: 1;" value="<?php echo $vta_nro_aprox; ?>">
 		</div>
 		<div class="col-1">
 			<label for="vta_comprob">Comprob nro:</label>
@@ -27,7 +28,7 @@
 			  <div class="input-group-prepend">
 			    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ModalSocios" accesskey="s"><i class="fas fa-user"></i></button> 
 			  </div>
-			  <input type="text" class="form-control" id="soc_id" name="soc_id"  placeholder="Socio" disabled="true" value="<?php echo set_value('soc_id'); ?>">
+			  <input type="text" class="form-control" id="soc_id" name="soc_id"  placeholder="alt s" readonly style="color: Grey; opacity: 1;" value="<?php echo set_value('soc_id'); ?>">
 			</div>
 		</div>
 		<div class="col-3">
@@ -54,7 +55,7 @@
 			  <div class="input-group-prepend">
 			    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" accesskey="b"><i class="fas fa-search"></i></button>
 			  </div>
-			  <input type="text" class="form-control" id="prod_code" name="prod_code" disabled="true" placeholder="Prod.">
+			  <input type="text" class="form-control" id="prod_code" name="prod_code" disabled="true" placeholder="alt b">
 			</div>
 		</div>
 		<div class="col-2">
