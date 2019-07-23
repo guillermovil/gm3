@@ -39,6 +39,8 @@ class Venta extends CI_Controller{
         print_r($_POST);
         echo '</pre>';  
 
+        // será necesario trabajar con transacción por si faya un insert
+
 
         // if ($this->form_validation->run() == FALSE){
 
