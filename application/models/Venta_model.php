@@ -51,6 +51,12 @@ class Venta_model extends CI_Model
         
 
     function insert($params){
+        datos[] array();
+        vta_comprob = $params['vta_comprob'];
+        vta_fecha = $params['vta_fecha']; 
+        soc_id = $params['soc_id']; 
+        vta_cliente = $params['vta_cliente']; 
+
         if ($this->db->insert('ventas',$params)){
             $insert_id = $this->db->insert_id();
             return $insert_id;
