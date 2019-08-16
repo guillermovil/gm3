@@ -13,7 +13,7 @@
 		</div>
 		<div class="col-1">
 			<label for="vta_comprob">Comprob nro:</label>
-			<input type="text" class="form-control" id="vta_comprob" name="vta_comprob" value="<?php echo set_value('vta_comprob'); ?>">
+			<input type="text" autofocus class="form-control" id="vta_comprob" name="vta_comprob" value="<?php echo set_value('vta_comprob'); ?>">
 		</div>
 		<div class="col-2">
 			<label for="vta_fecha">Fecha:</label>
@@ -155,7 +155,8 @@
 			</div>
 			<!-- Modal footer -->
 			<div class="modal-footer">
-				<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+				<!-- <button type="button" class="btn btn-danger" data-dismiss="modal">Borrar</button> -->
+				<button type="button" class="btn btn-danger" id="btnBorrar">Borrar</button>
 			</div>
 		</div>
 	</div>
@@ -198,65 +199,64 @@
 
         });
 
-    //Función para agregar filas en los detalles
+    	//Función para agregar filas en los detalles
 
-	$('#addRow').on( 'click', function () {
-		//verifico que el producto todavía no esté en la grilla
-		var existe = false;
-		detalles.rows().every(function (value, index) {
-			var data = this.data();
-			if(data.prod_code == $('#prod_code').val()){
-				existe = true;
-			    data.prod_cantidad++;	
-			    this.data(data).draw(false);				
+		$('#addRow').on( 'click', function () {
+			//verifico que el producto todavía no esté en la grilla
+			var existe = false;
+			detalles.rows().every(function (value, index) {
+				var data = this.data();
+				if(data.prod_code == $('#prod_code').val()){
+					existe = true;
+				    data.prod_cantidad++;	
+				    this.data(data).draw(false);				
+				}
+			});			
+			if (!existe){
+
+		        detalles.row.add( {
+					"prod_code": $('#prod_code').val(),
+					"prod_descrip": $('#prod_descrip').val(),
+					"prod_cantidad": $('#prod_cantidad').val(),
+					"prod_precio": $('#prod_precio').val(),
+					"accion": "<a href='' class='editor_remove btn btn-danger btn-sm'><i class='far fa-trash-alt'></i></a>"
+		        } ).draw( false );
+		 
+		        subtotal += $('#prod_cantidad').val() * $('#prod_precio').val();
+
 			}
-		});			
-		if (!existe){
-
-	        detalles.row.add( {
-				"prod_code": $('#prod_code').val(),
-				"prod_descrip": $('#prod_descrip').val(),
-				"prod_cantidad": $('#prod_cantidad').val(),
-				"prod_precio": $('#prod_precio').val(),
-				"accion": "<a href='' class='editor_remove btn btn-danger btn-sm'><i class='far fa-trash-alt'></i></a>"
-	        } ).draw( false );
-	 
-	        subtotal += $('#prod_cantidad').val() * $('#prod_precio').val();
-
-		}
-	} );
+		} );
     
 
 
-	$('#myform').on('submit', function(e){
-		var existe = false;
-		var form = this;
-		detalles.rows().every(function (value, index) {
-			var data = this.data();
+		$('#myform').on('submit', function(e){
+			var existe = false;
+			var form = this;
+			detalles.rows().every(function (value, index) {
+				var data = this.data();
 
 
-			$(form).append(
-			   $('<input>')
-			      .attr('type', 'hidden')
-			      .attr('name', 'prod_code1[]')
-			      .val(data.prod_code)
-			);
-			$(form).append(
-			   $('<input>')
-			      .attr('type', 'hidden')
-			      .attr('name', 'prod_cantidad1[]')
-			      .val(data.prod_cantidad)
-			);
+				$(form).append(
+				   $('<input>')
+				      .attr('type', 'hidden')
+				      .attr('name', 'prod_code1[]')
+				      .val(data.prod_code)
+				);
+				$(form).append(
+				   $('<input>')
+				      .attr('type', 'hidden')
+				      .attr('name', 'prod_cantidad1[]')
+				      .val(data.prod_cantidad)
+				);
 
-			$(form).append(
-			   $('<input>')
-			      .attr('type', 'hidden')
-			      .attr('name', 'prod_precio1[]')
-			      .val(data.prod_precio)
-			);
-		});			
-	} );
-
+				$(form).append(
+				   $('<input>')
+				      .attr('type', 'hidden')
+				      .attr('name', 'prod_precio1[]')
+				      .val(data.prod_precio)
+				);
+			});			
+		} );
 
 
     //Tabla de productos para la búsqueda
@@ -335,7 +335,20 @@
            ]     
 
         });    
-    });
+		$('#myModal').on('shown.bs.modal', function () {
+		    $('input:visible:enabled:first', this).focus();
+		}); 
+		$('#ModalSocios').on('shown.bs.modal', function () {
+		    $('input:visible:enabled:first', this).focus();
+		}); 
+
+		$("#btnBorrar").click( function(){
+			$('#soc_id').val('');
+			$('#soc_identif').val('');
+			$('#ModalSocios').modal('hide');
+		});
+
+    }); 
 
     //Función para seleccionar producto y mandarlo a la pantalla parent
     function carrito(prod_code, prod_descrip, prod_precio){
@@ -351,7 +364,8 @@
       $('#soc_identif').val(soc_nombre + ' ' + soc_apellido);
 
       $('#ModalSocios').modal('hide');
-    }    
+    }
+   
 </script>
 
 
