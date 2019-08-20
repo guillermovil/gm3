@@ -51,18 +51,48 @@ class Venta_model extends CI_Model
         
 
     function insert($params){
-        datos[] array();
-        vta_comprob = $params['vta_comprob'];
-        vta_fecha = $params['vta_fecha']; 
-        soc_id = $params['soc_id']; 
-        vta_cliente = $params['vta_cliente']; 
+        $mensaje='';
+        $datosCab = array(
+            'vta_comprob' => $params['vta_comprob'],
+            'vta_fecha' => $params['vta_fecha'], 
+            'soc_id' => $params['soc_id'], 
+            'vta_cliente' => $params['vta_cliente']
+        ); 
 
-        if ($this->db->insert('ventas',$params)){
-            $insert_id = $this->db->insert_id();
-            return $insert_id;
+        $detCod = $params['prod_code1'];
+        $detCant = $params['prod_cantidad1'];
+        $detPrec = $params['prod_precio1'];
+
+        $this->db->trans_begin();
+        if ($this->db->insert('ventas',$datosCab)){
+            $insert_id = $this->db->insert_id('ventas_vta_nro_seq');
+            for ($i = 0; $i < count($detCod) ; $i++) {
+                $datosDet = array(
+                    'vta_nro'=>$insert_id,
+                    'prod_code'=>$detCod[$i],
+                    'dv_cant'=>$detCant[$i],
+                    'dv_precio'=>$detPrec[$i]
+                );
+                if ($this->db->insert('ventas',$datosCab)){
+                    $mensaje="";
+                }else{
+                    $mensaje="Se produjo un error en el producto {$detCod[$i]} ";
+                }
+            }
         }else{
-            return false;
+            $mensaje="Se produjo un error en el encabezado de la venta";
         }
+
+
+        if ($this->db->trans_status() === FALSE || $mensaje != ''){
+                $this->db->trans_rollback();
+                $mensaje = $mensaje.' Error en transacción';
+        }
+        else{
+                $this->db->trans_commit();
+        }
+        return $mensaje;
+
     }
     
 
