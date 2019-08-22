@@ -73,7 +73,7 @@ class Venta_model extends CI_Model
                     'dv_cant'=>$detCant[$i],
                     'dv_precio'=>$detPrec[$i]
                 );
-                if ($this->db->insert('ventas',$datosCab)){
+                if ($this->db->insert('detventas',$datosDet)){
                     $mensaje="";
                 }else{
                     $mensaje="Se produjo un error en el producto {$detCod[$i]} ";

@@ -10,19 +10,16 @@ class Venta extends CI_Controller{
             //$this->load->model('Venta_model');
             $this->load->model('Venta_model');    
         }
+        $this->load->library('Controlfunc');
         
     }
 
     public function date_valid($date){
-    // La fecha viene en formato yyyy-mm-dd
-        $parts = explode("-", $date);
-        if (count($parts) == 3) {      
-          if (checkdate($parts[1], $parts[2], $parts[0])){
-            return TRUE;
-          }
+        if ($this->controlfunc->date_valid($date)){
+            return true;
         }else{
             $this->form_validation->set_message('date_valid', 'El formato de la fecha {field} es incorrecto.');
-            return false;       
+            return false ;          
         }
     }
 
@@ -69,43 +66,17 @@ class Venta extends CI_Controller{
             $this->load->view('layouts/main-vertical',$data);
         }else{
 
-            echo "Datos listos para guardar";
-            echo '<pre>';
-            print_r($_POST);
-            echo '</pre>';  
-
-/*
-Array
-(
-    [vta_nro] => 1
-    [vta_comprob] => 
-    [vta_fecha] => 2019-08-15
-    [soc_id] => 1
-    [vta_cliente] => 
-    [prod_cantidad] => 1
-    [prod_code1] => Array
-        (
-            [0] => PAL01
-        )
-
-    [prod_cantidad1] => Array
-        (
-            [0] => 1
-        )
-
-    [prod_precio1] => Array
-        (
-            [0] => 5
-        )
-
-)
-*/
+            // echo "Datos listos para guardar";
+            // echo '<pre>';
+            // print_r($_POST);
+            // echo '</pre>';  
 
 
-            $data['vta_comprob'] = $this->sinonull($this->input->post('vta_comprob'));
-            $data['vta_fecha'] = $this->sinonull($this->input->post('vta_fecha'));    
-            $data['soc_id'] = $this->sinonull($this->input->post('soc_id'));    
-            $data['vta_cliente'] = $this->sinonull($this->input->post('vta_cliente'));    
+
+            $data['vta_comprob'] = $this->controlfunc->sinonull($this->input->post('vta_comprob'));
+            $data['vta_fecha'] = $this->controlfunc->sinonull($this->input->post('vta_fecha'));    
+            $data['soc_id'] = $this->controlfunc->sinonull($this->input->post('soc_id'));    
+            $data['vta_cliente'] = $this->controlfunc->sinonull($this->input->post('vta_cliente'));    
             $data['prod_code1'] = $this->input->post('prod_code1');
             $data['prod_cantidad1'] = $this->input->post('prod_cantidad1');
             $data['prod_precio1'] = $this->input->post('prod_precio1');
@@ -118,11 +89,11 @@ Array
             $data1['subtitle'] = 'Listado general';
 
 
-            if ($insert) {
+            if ($insert=='') {
                 $data1['_alert'] = 'Registro guardado!';
                 $data1['_alert_tipo'] = 'alert-success';                
             }else{
-                $data1['_alert'] = 'El registro no se pudo agregar!';
+                $data1['_alert'] = "La venta no se pudo guardar,<br> $insert";
                 $data1['_alert_tipo'] = 'alert-warning';                
             }
             $data1['menu0'] = 'ventmenu';
