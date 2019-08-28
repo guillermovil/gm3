@@ -19,6 +19,7 @@ class Producto extends CI_Controller{
         } else {
             $this->load->model('Producto_model');    
         }
+        $this->load->library('Controlfunc');
         
     } 
 
@@ -39,13 +40,6 @@ class Producto extends CI_Controller{
         $this->form_validation->set_rules('prod_precio', 'Precio', 'required|numeric');
         $this->form_validation->set_rules('cat_code'   , 'Categoría', 'callback_select_check');
 
-    }
-    private function sinonull($dato){
-        if ($dato == ''){
-            return null;
-        }else{
-            return $dato;
-        }
     }
 
     private function ischeck($checkbox, $val){
@@ -117,12 +111,12 @@ class Producto extends CI_Controller{
             // print_r($_POST);
             // echo '</pre>';  
 
-            $data['prod_code'] = $this->sinonull($this->input->post('prod_code'));
-            $data['prod_descrip'] = $this->sinonull($this->input->post('prod_descrip'));    
-            $data['prod_precio'] = $this->sinonull($this->input->post('prod_precio'));    
-            $data['prod_stock'] = $this->sinonull($this->input->post('prod_stock'));    
+            $data['prod_code'] = $this->controlfunc->sinonull($this->input->post('prod_code'));
+            $data['prod_descrip'] = $this->controlfunc->sinonull($this->input->post('prod_descrip'));    
+            $data['prod_precio'] = $this->controlfunc->sinonull($this->input->post('prod_precio'));    
+            $data['prod_stock'] = $this->controlfunc->sinonull($this->input->post('prod_stock'));    
             $data['prod_ctrl_stock'] = $this->ischeck('prod_ctrl_stock','Si');    
-            $data['cat_code'] = $this->sinonull($this->input->post('cat_code'));    
+            $data['cat_code'] = $this->controlfunc->sinonull($this->input->post('cat_code'));    
             
             $insert = $this->Producto_model->insert($data);
 
@@ -187,8 +181,6 @@ class Producto extends CI_Controller{
         } 
         $data['categorias'] = $opc;
 
-
-
         $this->load->view('layouts/main-vertical',$data);
     }
 
@@ -215,12 +207,18 @@ class Producto extends CI_Controller{
 
             $this->load->view('layouts/main-vertical',$data);
         }else{
-            $data['prod_code'] = $this->sinonull($this->input->post('prod_code'));
-            $data['prod_descrip'] = $this->sinonull($this->input->post('prod_descrip'));
-            $data['prod_precio'] = $this->sinonull($this->input->post('prod_precio'));    
-            $data['prod_stock'] = $this->sinonull($this->input->post('prod_stock'));    
-            $data['prod_ctrl_stock'] = $this->sinonull($this->input->post('prod_ctrl_stock'));    
-            $data['cat_code'] = $this->sinonull($this->input->post('cat_code'));  
+
+
+            //echo 'POST';echo '<pre>';
+            //print_r($_POST);
+            //echo '</pre>';
+
+            $data['prod_code'] = $this->controlfunc->sinonull($this->input->post('prod_code'));
+            $data['prod_descrip'] = $this->controlfunc->sinonull($this->input->post('prod_descrip'));
+            $data['prod_precio'] = $this->controlfunc->sinonull($this->input->post('prod_precio'));    
+            $data['prod_stock'] = $this->controlfunc->sinonull($this->input->post('prod_stock'));    
+            $data['prod_ctrl_stock'] = $this->ischeck('prod_ctrl_stock','Si');    
+            $data['cat_code'] = $this->controlfunc->sinonull($this->input->post('cat_code')); 
 
             $update = $this->Producto_model->update($this->input->post('prod_code_original'),$data);
             $data1['_view'] = 'producto/index';

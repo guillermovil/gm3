@@ -28,7 +28,11 @@
     <div class="col-sm-2">
       <p>Ctrl. de sotck:</p>
       <div class="custom-control custom-checkbox">
-        <input type="checkbox" class="custom-control-input" name="prod_ctrl_stock" id="prod_ctrl_stock" value="Si" <?php echo set_checkbox('prod_ctrl_stock','Si', FALSE); ?> />
+        <?php if ($producto['prod_ctrl_stock']=='f'){?>
+          <input type="checkbox" class="custom-control-input" name="prod_ctrl_stock" id="prod_ctrl_stock" value="Si" />
+        <?php }else{?>
+          <input type="checkbox" class="custom-control-input" name="prod_ctrl_stock" id="prod_ctrl_stock" value="Si" checked="checked" />
+        <?php }; ?>
         <label class="custom-control-label" for="prod_ctrl_stock">Habilitar el control de stock</label> 
       </div>
     </div>

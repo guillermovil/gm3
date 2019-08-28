@@ -4,6 +4,7 @@
   $attributes = array('role' => 'form', 'id' => 'myform');
   echo form_open_multipart(site_url().'venta/addVentaPost',$attributes); 
   echo $vta_nro_aprox;
+
 ?>
 
 	<div class="form-row"> 

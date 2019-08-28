@@ -98,6 +98,9 @@
                         <li id="prodlista">
                             <a href="<?php echo site_url('producto');?>"><i class="fas fa-th"></i> Lista de productos</a>
                         </li>  
+                        <li id="ventgrid">
+                            <a href="<?php echo site_url('venta');?>"><i class="fas fa-th"></i> Ventas</a>
+                        </li>                          
                         <li id="ventlista">
                             <a href="<?php echo site_url('venta/addVenta');?>"><i class="fas fa-th"></i> Nueva venta</a>
                         </li>                                             

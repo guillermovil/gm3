@@ -124,13 +124,12 @@ class Venta_model extends CI_Model
         return $query->num_rows();  
     }
     
-    function all($limit,$start,$col,$dir)
-    {   
+
+    function all($limit,$start,$col,$dir){   
        $query = $this
                 ->db
-                ->select('vta_nro, vta_comprob, vta_fecha, soc_id, vta_cliente, soc_apellido, soc_nombre')
-                ->from('ventas')
-                ->join('socios', 'ventas.soc_id = socios.soc_id','left')
+                ->select('vta_nro, vta_comprob, vta_fecha, cliente, subtotal')
+                ->from('vw_ventas')
                 ->limit($limit,$start)
                 ->order_by($col,$dir)
                 ->get();
@@ -142,23 +141,21 @@ class Venta_model extends CI_Model
         }
     }
    
-    function search($limit,$start,$search,$col,$dir)
+    function search($limit,$start,$search,$col,$dir,$fecha)
     {
         $query = $this
                 ->db
-                ->select('vta_nro, vta_comprob, vta_fecha, soc_id, vta_cliente, soc_apellido, soc_nombre')
-                ->from('ventas')
-                ->join('socios', 'ventas.soc_id = socios.soc_id','left')
-                ->or_where('vta_nro',$search)
-                ->or_where('vta_comprob',$search)
-                ->or_like('vta_cliente',$search)
-                ->or_like('soc_apellido',$search)
-                ->or_like('soc_nombre',$search)
+                ->select('vta_nro, vta_comprob, vta_fecha, cliente, subtotal')
+                ->from('vw_ventas')
+                ->group_start()
+                    ->or_where('vta_nro',$search)
+                    ->or_where('vta_comprob',$search)
+                    ->or_like('cliente',$search)
+                ->group_end()
+                ->where('vta_fecha',$fecha)
                 ->limit($limit,$start)
                 ->order_by($col,$dir)
-                ->get();
-        
-       
+                ->get();      
         if($query->num_rows()>0){
             return $query->result();  
         }else{
@@ -166,20 +163,29 @@ class Venta_model extends CI_Model
         }
     }
 
-    function search_count($search)
+    function search_count($search,$fecha)
     {
         $query = $this
                 ->db
-                ->select('vta_nro')
-                ->from('ventas')
-                ->join('socios', 'ventas.soc_id = socios.soc_id','left')
-                ->or_where('vta_nro',$search)
-                ->or_where('vta_comprob',$search)
-                ->or_like('vta_cliente',$search)
-                ->or_like('soc_apellido',$search)
-                ->or_like('soc_nombre',$search)
+                ->select('vta_nro, vta_comprob, vta_fecha, cliente, subtotal')
+                ->from('vw_ventas')
+                ->group_start()
+                    ->or_where('vta_nro',$search)
+                    ->or_where('vta_comprob',$search)
+                    ->or_like('cliente',$search)
+                ->group_end()
+                ->where('vta_fecha',$fecha)
                 ->get();
         return $query->num_rows();
     } 
+
+    function get_detventa($vta_nro)
+    {
+        $this->db->select('productos.prod_code, prod_descrip, dv_cant, dv_precio, (dv_cant * dv_precio) AS subtotal')
+        ->from('detventas')
+        ->join('productos', 'detventas.prod_code = productos.prod_code')
+        ->where('vta_nro',$vta_nro);
+        return $this->db->get()->result_array();
+    }    
 }
 
