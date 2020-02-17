@@ -126,18 +126,36 @@ class Cuenta_model extends CI_Model
    function board_caja_stack($dias)   {
    		$dias = $dias - 1;
         $sql = "select 
-                trim(act_nombre) as act_nombre,
+            trim(act_nombre) as act_nombre,
+            t::date,
+                (
+                select coalesce(sum(ps_valor),0)
+                from pagossocios inner join inscripciones using(ins_id)
+                where ps_fecha::date = t::date and inscripciones.act_code = actividades.act_code
+                ) valor,
+                count (act_code) over(partition by t) + 1 as acts
+            from
+                actividades, 
+                generate_series((current_date - 7)::timestamp,(current_date)::timestamp,'1 day') t
+
+            union all
+
+            select 
+                'ventas' as act_nombre,  
                 t::date,
-                    (
-                        select coalesce(sum(ps_valor),0)
-                        from pagossocios inner join inscripciones using(ins_id)
-                        where ps_fecha::date = t::date and inscripciones.act_code = actividades.act_code
-                    ) valor,
-                    count (act_code) over(partition by t) acts
-                from
-                    actividades, 
-                    generate_series((current_date - $dias)::timestamp,(current_date)::timestamp,'1 day') t
-                order by 2,1";
+                (
+                    select coalesce (sum(dv_precio*dv_cant),0)
+                    from 
+                        ventas v
+                        inner join detventas d on v.vta_nro = d.vta_nro 
+                    where
+                        vta_fecha::date = t::date
+
+                ) valor, 7 as acts
+            from 
+                generate_series((current_date - 7)::timestamp,(current_date)::timestamp,'1 day') t
+
+            order by 2,1";
 
         $query = $this->db->query($sql);
         if($query->num_rows()>0){
