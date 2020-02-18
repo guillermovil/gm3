@@ -37,6 +37,29 @@ class Modalidad extends CI_Controller{
         }
     }
 
+
+    private function tipo($dato){
+        $nombre = $dato;
+        switch ($dato) {
+            case "d":
+                $nombre = "Diario";
+                break;
+            case "m2":
+                $nombre = "Mensual 2 x semana";
+                break;
+            case "m3":
+                $nombre = "Mensual 3 x semana";
+                break;
+            case "m6":
+                $nombre = "Mensual todos los días";
+                break;
+            case "s":
+                $nombre = "Semanal";
+                break;
+        }
+        return $nombre;        
+    }
+
     public function addModalidad($act_code) {
         $this->load->helper(array('form', 'url'));
         $data['_view'] = 'modalidad/add-modalidad';

@@ -174,8 +174,24 @@ class Cuenta_model extends CI_Model
                 inner join inscripciones using(ins_id)
                 inner join actividades using(act_code)
                 inner join socios using(soc_id)
-            where ps_fecha::date = current_date
-            order by ps_fecha desc, ps_created desc";
+            where ps_fecha::date >= current_date
+
+            union all
+
+            select 
+                vta_fecha, vta_fecha, 'VTA' concepto_caja, 
+                coalesce(soc_apellido||', '|| soc_nombre ,vta_cliente) socio, 
+                '-' actividad, 
+                sum(dv_cant*dv_precio) ps_valor 
+            from 
+                ventas v 
+                inner join detventas d using(vta_nro) 
+                left join socios s on v.soc_id=s.soc_id 
+            where
+                vta_fecha::date >= current_date
+            group by 1,2,3,4,5
+
+            order by 1 desc, 2 desc";
 
         $query = $this->db->get('vw_board_vencimientos');
 
