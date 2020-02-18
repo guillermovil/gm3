@@ -26,7 +26,7 @@ class Venta extends CI_Controller{
     private function set_rules()
     {
         $this->form_validation->set_rules('vta_fecha', 'Fecha', 'required|callback_date_valid');
-        if ($this->input->post('soc_id') == '' or empty($this->input->post('soc_id'))){
+        if ($this->input->post('soc_id') == '' /* or empty($this->input->post('soc_id')) */ ){
             $this->form_validation->set_rules('vta_cliente', 'Cliente', 'required');    
         }
         $this->form_validation->set_rules('prod_code1[]', 'Detalles', 'required',array('required' => 'Debe incluir al menos un producto en el detalle.'));
